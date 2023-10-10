@@ -65,13 +65,7 @@ determine_release_latest_version() {
   fi
 }
 
-# Exit if cURL is not installed
-if ! command -v curl >/dev/null; then
-  printf '%s\n' "cURL is required to download the Slack binary."
-  printf '%s\n' "Please install cURL and try again."
-  exit 1
-fi
-
+base_dir="$(printf "%s" "$CIRCLE_WORKING_DIRECTORY" | sed "s|~|$HOME|")"
 repo_org="$CIRCLE_PROJECT_USERNAME"
 repo_name="$CIRCLE_PROJECT_REPONAME"
 
@@ -133,8 +127,8 @@ if ! chmod +x "$binary"; then
   exit 1
 fi
 
-printf '%s\n' "Executing $binary binary..."
-$binary
+printf '%s\n' "Executing \"$base_dir/$binary\" binary..."
+"$base_dir/$binary"
 exit_code=$?
 if [ $exit_code -ne 0 ]; then
   printf '%s\n' "Failed to execute $binary binary or it exited with a non-zero exit code."
