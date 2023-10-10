@@ -233,12 +233,6 @@ workflows:
           context: SLACK_NOTIFICATIONS_TEST
           filters: *filters
           requires: [unit-tests]
-          matrix:
-            parameters:
-              runner:
-                - executor:
-                    name: go/default
-                    tag: "1.21.0"
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
