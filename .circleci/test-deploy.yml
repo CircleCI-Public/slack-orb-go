@@ -30,7 +30,9 @@ jobs:
     parameters:
       runner:
         type: executor
-        default: go
+        default:
+          name: go/default
+          tag: "1.21.0"
     executor: <<parameters.runner>>
     steps:
       - checkout
@@ -233,7 +235,10 @@ workflows:
           requires: [unit-tests]
           matrix:
             parameters:
-              runner: [go/default]
+              runner:
+                - executor:
+                    name: go/default
+                    tag: "1.21.0"
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
