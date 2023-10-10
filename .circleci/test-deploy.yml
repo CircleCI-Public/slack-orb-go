@@ -27,13 +27,9 @@ jobs:
       - go/test:
           verbose: true
   integration-test-templates:
-    parameters:
-      runner:
-        type: executor
-        default:
-          name: go/default
-          tag: "1.21.0"
-    executor: <<parameters.runner>>
+    executor:
+      name: go/default
+      tag: "1.21.0"
     steps:
       - checkout
       - slack/notify:
@@ -228,7 +224,8 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      - unit-tests
+      - unit-tests:
+          filters: *filters
       - integration-test-templates:
           context: SLACK_NOTIFICATIONS_TEST
           filters: *filters
