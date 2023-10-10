@@ -237,7 +237,7 @@ workflows:
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
-        requires: [integration-test-templates, orb-tools/pack]
+          requires: [integration-test-templates, orb-tools/pack]
           context: orb-publisher
           filters: *release-filters
       - orb-tools/publish:
