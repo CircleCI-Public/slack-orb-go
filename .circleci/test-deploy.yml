@@ -18,7 +18,7 @@ jobs:
   unit-tests:
     executor:
       name: go/default
-      tag: 1.21
+      tag: "1.21.0"
     steps:
       - checkout
       - go/load-cache
@@ -30,7 +30,7 @@ jobs:
     parameters:
       runner:
         type: executor
-        default: cimg
+        default: go
     executor: <<parameters.runner>>
     steps:
       - checkout
@@ -217,7 +217,7 @@ jobs:
   build-release:
     executor:
       name: go/default
-      tag: 1.21
+      tag: "1.21.0"
     steps:
       - go/install-goreleaser
       - go/goreleaser-release:
@@ -233,7 +233,7 @@ workflows:
           requires: [unit-tests]
           matrix:
             parameters:
-              runner: [go]
+              runner: [go/default]
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
@@ -265,6 +265,3 @@ executors:
       image: windows-server-2019-vs2019:current
       resource_class: windows.medium
       shell: bash.exe
-  go:
-    docker:
-      - image: cimg/go:1.21.2
