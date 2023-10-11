@@ -48,6 +48,8 @@ func PostToSlack(slackChannels string, slackMessageTemplate string, slackAccessT
 			}
 		}
 	}
+
+	fmt.Println("NOTIFY SUCCESS")
 }
 
 func main() {
