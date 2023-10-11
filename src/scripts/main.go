@@ -83,6 +83,7 @@ func main() {
 	jobStatus := os.Getenv("CCI_STATUS")
 	jobTag := os.Getenv("CIRCLE_TAG")
 	tagPattern := os.Getenv("SLACK_PARAM_TAGPATTERN")
+	ignoreSlackErrorsStr := os.Getenv("SLACK_PARAM_IGNORE_ERRORS")
 
 	// Expand environment variables
 	accessToken, _ = envsubst.String(accessToken)
@@ -153,5 +154,10 @@ func main() {
 	}
 
 	fmt.Println(modifiedJSON)
+
+	isDebug, _ := strconv.ParseBool(isDebugStr)
+	ignoreSlackErrors, _ := strconv.ParseBool(ignoreSlackErrorsStr)
+
+	PostToSlack(channels, modifiedJSON, accessToken, isDebug, ignoreSlackErrors) 
 
 }
