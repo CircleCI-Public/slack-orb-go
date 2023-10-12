@@ -16,41 +16,41 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func PostToSlack(slackChannels string, slackMessageTemplate string, slackAccessToken string, debug bool, ignoreErrors bool) {
-	// Split channels into slice
-	channels := strings.Split(slackChannels, ",")
-	for _, channel := range channels {
-		templateWithChannel, err := jsonutils.ApplyFunctionToJSON(slackMessageTemplate, jsonutils.AddRootProperty("channel", channel))
-		if err != nil {
-			log.Fatalf("%v", err)
-		}
+	func PostToSlack(slackChannels string, slackMessageTemplate string, slackAccessToken string, debug bool, ignoreErrors bool) {
+		// Split channels into slice
+		channels := strings.Split(slackChannels, ",")
+		for _, channel := range channels {
+			templateWithChannel, err := jsonutils.ApplyFunctionToJSON(slackMessageTemplate, jsonutils.AddRootProperty("channel", channel))
+			if err != nil {
+				log.Fatalf("%v", err)
+			}
 
-		headers := map[string]string{
-			"Content-Type":  "application/json",
-			"Authorization": "Bearer " + slackAccessToken,
-		}
-		slackSentResponse, err := httputils.SendHTTPRequest("POST", "https://slack.com/api/chat.postMessage", templateWithChannel, headers)
-		if err != nil {
-			log.Fatalf("Error posting to Slack: %v", err)
-		}
+			headers := map[string]string{
+				"Content-Type":  "application/json",
+				"Authorization": "Bearer " + slackAccessToken,
+			}
+			slackSentResponse, err := httputils.SendHTTPRequest("POST", "https://slack.com/api/chat.postMessage", templateWithChannel, headers)
+			if err != nil {
+				log.Fatalf("Error posting to Slack: %v", err)
+			}
 
-		slackErrorMsg, err := jsonutils.ApplyFunctionToJSON(slackSentResponse, jsonutils.ExtractRootProperty("error"))
-		if err != nil {
-			log.Fatalf("Error extracting error message: %v", err)
-		}
+			slackErrorMsg, err := jsonutils.ApplyFunctionToJSON(slackSentResponse, jsonutils.ExtractRootProperty("error"))
+			if err != nil {
+				log.Fatalf("Error extracting error message: %v", err)
+			}
 
-		if slackErrorMsg != "" {
-			fmt.Println("Slack API returned an error message:")
-			fmt.Println(slackErrorMsg)
-			fmt.Println("\n\nView the Setup Guide: https://github.com/CircleCI-Public/slack-orb/wiki/Setup")
-			if !ignoreErrors {
-				os.Exit(1)
+			if slackErrorMsg != "" {
+				fmt.Println("Slack API returned an error message:")
+				fmt.Println(slackErrorMsg)
+				fmt.Println("\n\nView the Setup Guide: https://github.com/CircleCI-Public/slack-orb/wiki/Setup")
+				if !ignoreErrors {
+					os.Exit(1)
+				}
 			}
 		}
-	}
 
-	fmt.Println("NOTIFY SUCCESS")
-}
+		fmt.Println("NOTIFY SUCCESS")
+	}
 
 func main() {
 	// Load the environment variables from the configuration file
@@ -88,13 +88,13 @@ func main() {
 	ignoreSlackErrorsStr := os.Getenv("SLACK_PARAM_IGNORE_ERRORS")
 
 	// Expand environment variables
-	accessToken, _ = envsubst.String(accessToken)
+	slackAccessToken, _ = envsubst.String(accessToken)
 	branchPattern, _ = envsubst.String(branchPattern)
 	channels, _ = envsubst.String(channels)
 	envVarContainingTemplate, _ = envsubst.String(envVarContainingTemplate)
 	eventToSendMessage, _ = envsubst.String(eventToSendMessage)
 	invertMatchStr, _ = envsubst.String(invertMatchStr)
-	isDebugStr, _ = envsubst.String(isDebugStr)
+	// isDebugStr, _ = envsubst.String(isDebugStr)
 	tagPattern, _ = envsubst.String(tagPattern)
 
 	// Exit if required environment variables are not set
@@ -156,9 +156,43 @@ func main() {
 
 	fmt.Println(modifiedJSON)
 
-	isDebug, _ := strconv.ParseBool(isDebugStr)
+	// isDebug, _ := strconv.ParseBool(isDebugStr)
 	ignoreSlackErrors, _ := strconv.ParseBool(ignoreSlackErrorsStr)
 
-	PostToSlack(channels, modifiedJSON, accessToken, isDebug, ignoreSlackErrors) 
-
+	// PostToSlack(channels, modifiedJSON, accessToken, isDebug, ignoreSlackErrors) 
+	// func PostToSlack(slackChannels string, slackMessageTemplate string, slackAccessToken string, debug bool, ignoreErrors bool) {
+		// Split channels into slice
+		slackChannels := strings.Split(channels, ",")
+		for _, channel := range slackChannels {
+			jsonWithChannel, err := jsonutils.ApplyFunctionToJSON(modifiedJSON, jsonutils.AddRootProperty("channel", channel))
+			if err != nil {
+				log.Fatalf("%v", err)
+			}
+	
+			headers := map[string]string{
+				"Content-Type":  "application/json",
+				"Authorization": "Bearer " + slackAccessToken,
+			}
+			slackSentResponse, err := httputils.SendHTTPRequest("POST", "https://slack.com/api/chat.postMessage", jsonWithChannel, headers)
+			if err != nil {
+				log.Fatalf("Error posting to Slack: %v", err)
+			}
+	
+			slackErrorMsg, err := jsonutils.ApplyFunctionToJSON(slackSentResponse, jsonutils.ExtractRootProperty("error"))
+			if err != nil {
+				log.Fatalf("Error extracting error message: %v", err)
+			}
+	
+			if slackErrorMsg != "" {
+				fmt.Println("Slack API returned an error message:")
+				fmt.Println(slackErrorMsg)
+				fmt.Println("\n\nView the Setup Guide: https://github.com/CircleCI-Public/slack-orb/wiki/Setup")
+				if !ignoreSlackErrors {
+					os.Exit(1)
+				}
+			}
+		}
+	
+		fmt.Println("NOTIFY SUCCESS")
+	// }
 }
