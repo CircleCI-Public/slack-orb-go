@@ -116,8 +116,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-
-	fmt.Println(modifiedJSON)
 	
 	ignoreErrors, _ := strconv.ParseBool(ignoreErrorsStr)
 	slackChannels := strings.Split(channels, ",")
