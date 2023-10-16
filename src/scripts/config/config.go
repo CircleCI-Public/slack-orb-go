@@ -61,18 +61,19 @@ func (e *ExpansionError) Error() string {
 // ExpandEnvVariables expands environment variables in the configuration values.
 func (c *Config) ExpandEnvVariables() error {
 	fields := map[string]*string{
-		"AccessToken":               &c.AccessToken,
-		"BranchPattern":             &c.BranchPattern,
-		"ChannelsStr":               &c.ChannelsStr,
-		"EnvVarContainingTemplate":  &c.EnvVarContainingTemplate,
-		"EventToSendMessage":        &c.EventToSendMessage,
-		"InvertMatchStr":            &c.InvertMatchStr,
-		"IgnoreErrorsStr":           &c.IgnoreErrorsStr,
-		"TagPattern":                &c.TagPattern,
+		"AccessToken":              &c.AccessToken,
+		"BranchPattern":            &c.BranchPattern,
+		"ChannelsStr":              &c.ChannelsStr,
+		"EnvVarContainingTemplate": &c.EnvVarContainingTemplate,
+		"EventToSendMessage":       &c.EventToSendMessage,
+		"InvertMatchStr":           &c.InvertMatchStr,
+		"IgnoreErrorsStr":          &c.IgnoreErrorsStr,
+		"TagPattern":               &c.TagPattern,
 	}
 
 	for fieldName, fieldValue := range fields {
 		val, err := envsubst.String(*fieldValue)
+
 		if err != nil {
 			return &ExpansionError{FieldName: fieldName, Err: err}
 		}
