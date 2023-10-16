@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/CircleCI-Public/slack-orb-go/src/scripts/ioutils"
 	"github.com/a8m/envsubst"
+	"github.com/joho/godotenv"
 )
 
 // Config represents the configuration loaded from environment variables.
@@ -90,6 +92,17 @@ func (c *Config) Validate() error {
 	}
 	if c.ChannelsStr == "" {
 		return &EnvVarError{VarName: "SLACK_PARAM_CHANNEL"}
+	}
+	return nil
+}
+
+// LoadEnvFromFile loads environment variables from a specified file.
+func LoadEnvFromFile(filePath string) error {
+	if ioutils.FileExists(filePath) {
+		fmt.Printf("Loading %q into the environment...\n", filePath)
+		if err := godotenv.Load(filePath); err != nil {
+			return fmt.Errorf("Error loading %q file: %v", filePath, err)
+		}
 	}
 	return nil
 }

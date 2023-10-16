@@ -7,37 +7,26 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/CircleCI-Public/slack-orb-go/src/scripts/config"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/httputils"
-	"github.com/CircleCI-Public/slack-orb-go/src/scripts/ioutils"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/stringutils"
-	"github.com/CircleCI-Public/slack-orb-go/src/scripts/config"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	// Load the environment variables from the configuration file
-	// This has to be done before anything else to ensure that the environment variables modified by the configuration file are available
-	bashEnv := os.Getenv("BASH_ENV")
-	if ioutils.FileExists(bashEnv) {
-		fmt.Println("Loading BASH_ENV into the environment...")
-		if err := godotenv.Load(bashEnv); err != nil {
-			log.Fatal("Error loading BASH_ENV file:", err)
-		}
+	// Load environment variables from BASH_ENV and SLACK_JOB_STATUS files
+	// This has to be done before loading the configuration because the configuration
+	// depends on the environment variables loaded from these files
+	if err := config.LoadEnvFromFile(os.Getenv("BASH_ENV")); err != nil {
+		log.Fatal(err)
 	}
-
-	// Load the job status from the configuration file
-	jobStatusFile := "/tmp/SLACK_JOB_STATUS"
-	if ioutils.FileExists(jobStatusFile) {
-		fmt.Println("Loading SLACK_JOB_STATUS into the environment...")
-		if err := godotenv.Load(jobStatusFile); err != nil {
-			log.Fatal("Error loading SLACK_JOB_STATUS file:", err)
-		}
+	if err := config.LoadEnvFromFile("/tmp/SLACK_JOB_STATUS"); err != nil {
+		log.Fatal(err)
 	}
 
 	conf := config.NewConfig()
-	if err := conf.ExpandEnvVariables() ; err != nil {
+
+	if err := conf.ExpandEnvVariables(); err != nil {
 		log.Fatalf("Error expanding environment variables: %v", err)
 	}
 
