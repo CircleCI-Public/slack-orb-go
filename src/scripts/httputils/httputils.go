@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func SendHTTPRequest(method, url, body string, headers map[string]string) (string, error) {
+func SendHTTPRequest(method, url, body string, headers map[string]string) (string, int, error) {
 	req, err := http.NewRequest(method, url, bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		return "", fmt.Errorf("Error creating request: %v", err)
@@ -24,8 +24,8 @@ func SendHTTPRequest(method, url, body string, headers map[string]string) (strin
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("Error reading response: %v", err)
+		return "", resp.StatusCode, fmt.Errorf("Error reading response: %v", err)
 	}
 
-	return string(respBody), nil
+	return string(respBody), resp.StatusCode, nil
 }
