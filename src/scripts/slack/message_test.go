@@ -79,7 +79,9 @@ func TestPostMessage_ErrorCases(t *testing.T) {
 
 	// Activate the httpmock
 	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
+	t.Cleanup(func() {
+		httpmock.DeactivateAndReset()
+	})
 
 	// Iterate over the test cases
 	for _, tc := range testCases {
