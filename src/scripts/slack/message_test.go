@@ -65,7 +65,7 @@ func TestPostMessage_ErrorCases(t *testing.T) {
 		{"rate_limited", `{"ok": false, "error": "rate_limited"}`, "rate_limited"},
 		{"not_authed", `{"ok": false, "error": "not_authed"}`, "not_authed"},
 		{"not_in_channel", `{"ok": false, "error": "not_in_channel"}`, "not_in_channel"},
-		{"user_is_bot", `{"ok": false, "error": "user_is_bot"}`, "channel_not_found"},
+		{"user_is_bot", `{"ok": false, "error": "user_is_bot"}`, "user_is_bot"},
 	}
 
 	// Create a new Message
