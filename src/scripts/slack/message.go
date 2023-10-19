@@ -23,12 +23,12 @@ func (s *Message) PostMessage(channel string) {
 		"Content-Type":  "application/json",
 		"Authorization": "Bearer " + s.AccessToken,
 	}
-	response, _ := httputils.SendHTTPRequest("POST", "https://slack.com/api/chat.postMessage", jsonWithChannel, headers)
-	fmt.Printf("Slack API response:\n%s\n", response)
+	response, statusCode, _ := httputils.SendHTTPRequest("POST", "https://slack.com/api/chat.postMessage", jsonWithChannel, headers)
+	fmt.Printf("Slack API response:\nStatus Code: %d\n%s\n", statusCode, response)
 
 	errorMsg, _ := jsonutils.ApplyFunctionToJSON(response, jsonutils.ExtractRootProperty("error"))
 	if errorMsg != "" {
-		fmt.Printf("Slack API returned an error message:\n%s", errorMsg)
+		fmt.Printf("Slack API returned an error message:\nStatus Code: %d\\n%s", statusCode, errorMsg)
 		fmt.Println("\n\nView the Setup Guide: https://github.com/CircleCI-Public/slack-orb/wiki/Setup")
 		if !s.IgnoreErrors {
 			os.Exit(1)
