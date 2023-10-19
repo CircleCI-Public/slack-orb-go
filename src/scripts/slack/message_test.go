@@ -23,7 +23,9 @@ func TestPostMessage(t *testing.T) {
 
 	// Activate the httpmock
 	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
+	t.Cleanup(func() {
+		httpmock.DeactivateAndReset()
+	})
 
 	// Mock the Slack API response
 	httpmock.RegisterResponder("POST", "https://slack.com/api/chat.postMessage",
