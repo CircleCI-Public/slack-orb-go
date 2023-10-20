@@ -1,7 +1,7 @@
 package slack
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/stringutils"
@@ -31,27 +31,27 @@ func (j *Notification) IsPostConditionMet() bool {
 
 }
 
-func (j *Notification) BuildMessageBody() string {
+func (j *Notification) BuildMessageBody() (string, error) {
 	// Build the message body
 	template, err := jsonutils.DetermineTemplate(j.InlineTemplate, j.Status, j.EnvVarContainingTemplate)
 	if err != nil {
-		log.Fatalf("%v", err)
+		return "", err
 	}
 	if template == "" {
-		log.Fatalf("the template %q is empty. Exiting without posting to Slack...", template)
+		return "", fmt.Errorf("the template %q is empty. Exiting without posting to Slack", template)
 	}
 
 	// Expand environment variables in the template
 	templateWithExpandedVars, err := jsonutils.ApplyFunctionToJSON(template, jsonutils.ExpandEnvVarsInInterface)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	// Add a "channel" property with a nested "myChannel" property
 	modifiedJSON, err := jsonutils.ApplyFunctionToJSON(templateWithExpandedVars, jsonutils.AddRootProperty("channel", "my_channel"))
 	if err != nil {
-		log.Fatalf("%v", err)
+		return "", err
 	}
 
-	return modifiedJSON
+	return modifiedJSON, nil
 }
