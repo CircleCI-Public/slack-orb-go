@@ -79,17 +79,17 @@ base_dir="$(printf "%s" "$CIRCLE_WORKING_DIRECTORY" | sed "s|~|$HOME|")"
 repo_org="CircleCI-Public"
 repo_name="slack-orb-go"
 
-# If SLACK_BOOL_RUN_FROM_SOURCE is set to 1, we will build and run the binary from source
+# If ORB_BOOL_RUN_FROM_SOURCE is set to 1, we will build and run the binary from source
 # Otherwise, we will download the binary from GitHub and run it
 binary=""
-if [ "$SLACK_BOOL_RUN_FROM_SOURCE" -eq 1 ]; then
+if [ "$ORB_BOOL_RUN_FROM_SOURCE" -eq 1 ]; then
   binary="$repo_name"
   printf '%s\n' "Building $binary binary..."
   if ! go build -o "$binary" ./src/scripts/main.go; then
     printf '%s\n' "Failed to build $binary binary."
     exit 1
   fi
-elif [ -z "$SLACK_BOOL_RUN_FROM_SOURCE" ] || [ "$SLACK_BOOL_RUN_FROM_SOURCE" -eq 0 ]; then
+elif [ -z "$ORB_BOOL_RUN_FROM_SOURCE" ] || [ "$ORB_BOOL_RUN_FROM_SOURCE" -eq 0 ]; then
   if ! determine_http_client; then
     printf '%s\n' "cURL or wget is required to download the Slack binary."
     printf '%s\n' "Please install cURL or wget and try again."
@@ -129,7 +129,7 @@ elif [ -z "$SLACK_BOOL_RUN_FROM_SOURCE" ] || [ "$SLACK_BOOL_RUN_FROM_SOURCE" -eq
 
   printf '%s\n' "Downloaded $repo_name binary to $binary_download_dir"
 else
-  printf '%s\n' "Invalid SLACK_BOOL_RUN_FROM_SOURCE value: $SLACK_BOOL_RUN_FROM_SOURCE."
+  printf '%s\n' "Invalid ORB_BOOL_RUN_FROM_SOURCE value: $ORB_BOOL_RUN_FROM_SOURCE."
   exit 1
 fi
 
