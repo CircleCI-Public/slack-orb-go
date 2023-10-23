@@ -254,6 +254,13 @@ workflows:
           requires: [integration-test-templates, orb-tools/pack]
           context: orb-publisher
           filters: *release-filters
+      - orb-tools/publish:
+          orb_name: circleci/slack
+          vcs_type: << pipeline.project.type >>
+          pub_type: dev
+          requires: [build-release]
+          context: orb-publisher
+          filters: *release-filters
 executors:
   cimg:
     docker:
