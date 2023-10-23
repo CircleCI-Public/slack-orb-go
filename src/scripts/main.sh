@@ -73,7 +73,8 @@ print_warn() {
   printf "${yellow}%s${normal}\n" "$1"
 }
 
-print_warn "This is a development version of the Slack Orb for Go. It is in experimental phase and is subject to change."
+print_warn "This is an experimental version of the Slack Orb in Go."
+print_warn "Thank you for trying it out and please provide feedback to us at https://github.com/CircleCI-Public/slack-orb-go/issues"
 
 base_dir="$(printf "%s" "$CIRCLE_WORKING_DIRECTORY" | sed "s|~|$HOME|")"
 repo_org="CircleCI-Public"
