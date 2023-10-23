@@ -39,8 +39,8 @@ detect_os() {
 detect_arch() {
   detected_arch="$(uname -m)"
   case "$detected_arch" in
-  x86_64) ARCH=x86_64 ;;
-  i386 | i486 | i586 | i686) ARCH=x86 ;;
+  x86_64 | amd64) ARCH=amd64 ;;
+  i386 | i486 | i586 | i686) ARCH=386 ;;
   arm64 | aarch64) ARCH=arm64 ;;
   arm*) ARCH=arm ;;
   *) return 1 ;;
@@ -117,7 +117,7 @@ elif [ -z "$ORB_BOOL_RUN_FROM_SOURCE" ] || [ "$ORB_BOOL_RUN_FROM_SOURCE" -eq 0 ]
   printf '%s\n' "Release's latest version: $LATEST_VERSION."
 
   # TODO: Make the version configurable via command parameter
-  repo_url="https://github.com/$repo_org/$repo_name/releases/download/$LATEST_VERSION/$repo_name-$PLATFORM-$ARCH"
+  repo_url="https://github.com/$repo_org/$repo_name/releases/download/$LATEST_VERSION/${repo_name}_${PLATFORM}_${ARCH}"
   printf '%s\n' "Release URL: $repo_url."
 
   # TODO: Check the md5sum of the downloaded binary
