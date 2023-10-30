@@ -109,6 +109,7 @@ func LoadEnvFromFile(filePath string) error {
 	}
 
 	if runtime.GOOS == "windows" {
+		fmt.Printf("Converting %q file to CRLF...\n", filePath)
 		if err := ConvertFileToCRLF(filePath); err != nil {
 			return fmt.Errorf("Error converting %q file to CRLF: %v", filePath, err)
 		}
