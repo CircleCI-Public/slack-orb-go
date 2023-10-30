@@ -105,6 +105,7 @@ func (c *Config) Validate() error {
 // If the file exists and the OS is Windows, it converts the line endings to CRLF.
 func LoadEnvFromFile(filePath string) error {
 	if !ioutils.FileExists(filePath) {
+		fmt.Printf("File %q does not exist. Skipping...\n", filePath)
 		return nil
 	}
 
@@ -133,8 +134,7 @@ func ConvertFileToCRLF(filePath string) error {
 	newContent := strings.ReplaceAll(string(content), "\r\n", "\n") // Convert CRLFs to LFs
 	newContent = strings.ReplaceAll(newContent, "\n", "\r\n")       // Convert LFs to CRLFs
 
-	err = os.WriteFile(filePath, []byte(newContent), 0)
-	if err != nil {
+	if err := os.WriteFile(filePath, []byte(newContent), 0); err != nil {
 		return err
 	}
 
