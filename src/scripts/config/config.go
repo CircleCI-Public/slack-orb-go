@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
+	"runtime"
+	"strings"
 
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/ioutils"
 	"github.com/a8m/envsubst"
@@ -97,12 +99,43 @@ func (c *Config) Validate() error {
 }
 
 // LoadEnvFromFile loads environment variables from a specified file.
+//
+// If the file does not exist, it does nothing.
+// If the file exists, it loads the environment variables from it.
+// If the file exists and the OS is Windows, it converts the line endings to CRLF.
 func LoadEnvFromFile(filePath string) error {
-	if ioutils.FileExists(filePath) {
-		fmt.Printf("Loading %q into the environment...\n", filePath)
-		if err := godotenv.Load(filePath); err != nil {
-			return fmt.Errorf("Error loading %q file: %v", filePath, err)
+	if !ioutils.FileExists(filePath) {
+		return nil
+	}
+
+	if runtime.GOOS == "windows" {
+		if err := ConvertFileToCRLF(filePath); err != nil {
+			return fmt.Errorf("Error converting %q file to CRLF: %v", filePath, err)
 		}
 	}
+
+	fmt.Printf("Loading %q into the environment...\n", filePath)
+	if err := godotenv.Load(filePath); err != nil {
+		return fmt.Errorf("Error loading %q file: %v", filePath, err)
+	}
+
+	return nil
+}
+
+// ConvertFileToCRLF converts line endings in a file to CRLF.
+func ConvertFileToCRLF(filePath string) error {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	newContent := strings.ReplaceAll(string(content), "\r\n", "\n") // Convert CRLFs to LFs
+	newContent = strings.ReplaceAll(newContent, "\n", "\r\n")       // Convert LFs to CRLFs
+
+	err = os.WriteFile(filePath, []byte(newContent), 0)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
