@@ -30,9 +30,11 @@ jobs:
           race: true
           verbose: true
   integration-test-templates:
-    executor:
-      name: go/default
-      tag: "1.21.0"
+    parameters:
+      runner:
+        type: executor
+        default: cimg
+    executor: << parameters.runner >>
     steps:
       - checkout
       - run:
@@ -45,8 +47,8 @@ jobs:
           debug: true
           step_name: "Validate Checksum"
           template: basic_success_1
-          event: always  
-          sha256: "$SLACK_BIN_CHECKSUM"  
+          event: always
+          sha256: "$SLACK_BIN_CHECKSUM"
       - slack/notify:
           debug: true
           step_name: "Custom template with group mention"
@@ -255,6 +257,9 @@ workflows:
           context: SLACK_NOTIFICATIONS_TEST
           filters: *filters
           requires: [unit-tests]
+          matrix:
+            parameters:
+              runner: [cimg, mac, alpine, windows]
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
@@ -271,16 +276,16 @@ workflows:
 executors:
   cimg:
     docker:
-      - image: cimg/base:current
+      - image: cimg/go:1.21.3
   mac:
     macos:
-      xcode: 14.0.0
+      xcode: 15.0.0
   alpine:
     # This image contains both CURL and JQ
     docker:
       - image: dwdraju/alpine-curl-jq
   windows:
     machine:
-      image: windows-server-2019-vs2019:current
+      image: windows-server-2022-gui:current
       resource_class: windows.medium
       shell: bash.exe
