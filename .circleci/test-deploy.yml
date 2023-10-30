@@ -259,7 +259,7 @@ workflows:
           requires: [unit-tests]
           matrix:
             parameters:
-              runner: [cimg, mac, alpine, windows]
+              runner: [cimg, alpine, windows]
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
@@ -283,7 +283,7 @@ executors:
   alpine:
     # This image contains both CURL and JQ
     docker:
-      - image: dwdraju/alpine-curl-jq
+      - image: golang:alpine
   windows:
     machine:
       image: windows-server-2022-gui:current
