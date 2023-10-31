@@ -237,8 +237,11 @@ func TestConvertFileToCRLF(t *testing.T) {
 				t.Fatalf("Couldn't create test file: %v", err)
 			}
 			t.Cleanup(func() {
-				_ = os.Remove(filePath)
-			}
+				err := os.Remove(filePath)
+				if err != nil {
+					t.Logf("Failed to remove test file: %v", err)
+				}
+			})
 
 			// Running the ConvertFileToCRLF function
 			err = ConvertFileToCRLF(filePath)
