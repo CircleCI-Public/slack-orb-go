@@ -56,12 +56,10 @@ detect_arch() {
 # $2: The GitHub repository
 # $3: The HTTP client to use (curl or wget)
 determine_release_latest_version() {
-  url="https://github.com/$1/$2/releases/latest"
-
   if [ "$3" = "curl" ]; then
     LATEST_VERSION="$(curl --fail --retry 3 -Ls -o /dev/null -w '%{url_effective}' "https://github.com/$1/$2/releases/latest" | sed 's:.*/::')"
   elif [ "$3" = "wget" ]; then
-    LATEST_VERSION="$(wget -qO- https://api.github.com/repos/$1/$2/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
+    LATEST_VERSION="$(wget -qO- "https://api.github.com/repos/$1/$2/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
   else
     printf '%s\n' "Invalid HTTP client specified."
     return 1
