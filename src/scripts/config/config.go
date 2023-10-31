@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"runtime"
@@ -137,8 +138,8 @@ func LoadEnvFromFile(filePath string) error {
 
 // ConvertFileToCRLF converts line endings in a file to CRLF.
 var (
-	CRLF = []byte{13,10}
-	LF = []byte{10}
+	CRLF = []byte{13, 10}
+	LF   = []byte{10}
 )
 
 // ConvertFileToCRLF converts line endings in a file to CRLF.
@@ -152,20 +153,6 @@ func ConvertFileToCRLF(filePath string) error {
 	content = bytes.ReplaceAll(content, LF, CRLF)
 
 	if err := os.WriteFile(filePath, content, 0); err != nil {
-		return err
-	}
-
-	return nil
-}
-	content, err := os.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-
-	newContent := strings.ReplaceAll(string(content), "\r\n", "\n") // Convert CRLFs to LFs
-	newContent = strings.ReplaceAll(newContent, "\n", "\r\n")       // Convert LFs to CRLFs
-
-	if err := os.WriteFile(filePath, []byte(newContent), 0); err != nil {
 		return err
 	}
 
