@@ -145,7 +145,27 @@ func LoadEnvFromFile(filePath string) error {
 }
 
 // ConvertFileToCRLF converts line endings in a file to CRLF.
+var (
+	CRLF = []byte{13,10}
+	LF = []byte{10}
+)
+
+// ConvertFileToCRLF converts line endings in a file to CRLF.
 func ConvertFileToCRLF(filePath string) error {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	content = bytes.ReplaceAll(content, CRLF, LF)
+	content = bytes.ReplaceAll(content, LF, CRLF)
+
+	if err := os.WriteFile(filePath, content, 0); err != nil {
+		return err
+	}
+
+	return nil
+}
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
