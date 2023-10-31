@@ -98,29 +98,39 @@ func (c *Config) Validate() error {
 	return nil
 }
 
+// handleOSSpecifics checks and applies OS-specific modifications to the file.
+func handleOSSpecifics(filePath string) (string, error) {
+	if runtime.GOOS == "windows" {
+		filePath = strings.Replace(filePath, "/tmp", "C:/Users/circleci/AppData/Local/Temp", 1)
+
+		err := ConvertFileToCRLF(filePath)
+		if err != nil {
+			return "", fmt.Errorf("error converting file to CRLF: %w", err)
+		}
+	}
+	return filePath, nil
+}
+
 // LoadEnvFromFile loads environment variables from a specified file.
-//
-// If the file does not exist, it does nothing.
-// If the file exists, it loads the environment variables from it.
-// If the file exists and the OS is Windows, it converts the line endings to CRLF.
 func LoadEnvFromFile(filePath string) error {
-	if !ioutils.FileExists(filePath) {
-		fmt.Printf("File %q does not exist. Skipping...\n", filePath)
+	fmt.Println("Starting to load environment variables from file.")
+
+	modifiedPath, err := handleOSSpecifics(filePath)
+	if err != nil {
+		return fmt.Errorf("OS-specific handling failed: %v", err)
+	}
+
+	if !ioutils.FileExists(modifiedPath) {
+		fmt.Printf("File %q does not exist. Skipping...\n", modifiedPath)
 		return nil
 	}
 
-	if runtime.GOOS == "windows" {
-		fmt.Printf("Converting %q file to CRLF...\n", filePath)
-		if err := ConvertFileToCRLF(filePath); err != nil {
-			return fmt.Errorf("Error converting %q file to CRLF: %v", filePath, err)
-		}
+	fmt.Printf("Loading %q into the environment...\n", modifiedPath)
+	if err := godotenv.Load(modifiedPath); err != nil {
+		return fmt.Errorf("error loading %q file: %v", modifiedPath, err)
 	}
 
-	fmt.Printf("Loading %q into the environment...\n", filePath)
-	if err := godotenv.Load(filePath); err != nil {
-		return fmt.Errorf("Error loading %q file: %v", filePath, err)
-	}
-
+	fmt.Println("Environment variables loaded successfully.")
 	return nil
 }
 
