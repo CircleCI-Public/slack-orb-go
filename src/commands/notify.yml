@@ -56,23 +56,23 @@ parameters:
     type: string
     default: $SLACK_DEFAULT_CHANNEL
   ignore_errors:
-      description: |
-        Ignore errors posting to Slack.
-        Disable to catch initial setup errors. Re-enable to prevent Slack errors from affecting your pipeline.
-      type: boolean
-      default: true
+    description: |
+      Ignore errors posting to Slack.
+      Disable to catch initial setup errors. Re-enable to prevent Slack errors from affecting your pipeline.
+    type: boolean
+    default: true
   debug:
-      description: |
-       Enable to view full payload being sent to Slack and response being received from the API call.
-       Redacted content can be viewed by re-running the job with SSH and accessing the log files referenced in the job output.
-       When run in a persistent build environment such as CircleCI Runner, these debug log files may remain in the system's temporary filesystem indefinitely and accumulate over time.
-      type: boolean
-      default: false
+    description: |
+      Enable to view full payload being sent to Slack and response being received from the API call.
+      Redacted content can be viewed by re-running the job with SSH and accessing the log files referenced in the job output.
+      When run in a persistent build environment such as CircleCI Runner, these debug log files may remain in the system's temporary filesystem indefinitely and accumulate over time.
+    type: boolean
+    default: false
   circleci_host:
-      description: |
-       A CircleCI Host which used in a message template.
-      type: string
-      default: https://circleci.com
+    description: |
+      A CircleCI Host which used in a message template.
+    type: string
+    default: https://circleci.com
   step_name:
     type: string
     default: Slack - Sending Notification
