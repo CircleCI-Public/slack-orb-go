@@ -39,6 +39,7 @@ jobs:
           name: Build Latest
           command: |
             go build -o ./.circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go ./src/scripts/main.go
+            echo "export SLACK_CURRENT_SHA=$(sha256sum ./.circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go)" >> $BASH_ENV
           when: always      
       - slack/notify:
           debug: true
@@ -227,6 +228,12 @@ jobs:
               "type": "mrkdwn",
               "text": "$(cat /tmp/msg)"
             }
+      - slack/notify:
+          debug: true
+          step_name: "Validate Sha256"
+          template: basic_fail_1
+          event: always
+          sha256: $SLACK_CURRENT_SHA
   build-release:
     executor:
       name: go/default

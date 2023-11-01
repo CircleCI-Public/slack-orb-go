@@ -142,7 +142,7 @@ fi
 if [ -n "$SLACK_PARAM_SHA256" ]; then
   SHA256_SUBST=$(circleci env subst "$SLACK_PARAM_SHA256")
   printf '%s\n' "Verifying $binary binary SHA256 checksum..."
-  [ ! "$(which shasum256)" ] && printf '%s\n' "shasum256 is required to verify the SHA256 checksum." && exit 1
+  [ ! "$(which sha256sum)" ] && printf '%s\n' "sha256sum is required to verify the SHA256 checksum." && exit 1
   if ! printf '%s  %s' "$SHA256_SUBST" "$binary" | sha256sum -c -; then
     print_error "Failed to verify $binary binary SHA256 checksum."
     exit 1
