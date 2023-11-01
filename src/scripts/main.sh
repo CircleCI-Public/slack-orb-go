@@ -144,8 +144,7 @@ if [ -n "$SLACK_PARAM_SHA256" ]; then
   printf '%s\n' "Verifying $binary binary SHA256 checksum..."
   [ ! "$(which shasum256)" ] && printf '%s\n' "shasum256 is required to verify the SHA256 checksum." && exit 1
   if ! printf '%s  %s' "$SHA256_SUBST" "$binary" | sha256sum -c -; then
-    printf '\033[0;31m%s\n' "Failed to verify $binary binary SHA256 checksum."
-    printf '\033[0m' # Reset text color back to default
+    print_error "Failed to verify $binary binary SHA256 checksum."
     exit 1
   fi
 fi
