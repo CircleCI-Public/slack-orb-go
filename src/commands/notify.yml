@@ -81,9 +81,9 @@ parameters:
     type: string
     default: ""
     description: |
-      Verify the binary downloaded by this orb for integrity using a SHA256 hash. 
-      Leave empty to skip verification. 
-      Find the hash for your binary in the matching version release on GitHub. 
+      Verify the binary downloaded by this orb for integrity using a SHA256 hash.
+      Leave empty to skip verification.
+      Find the hash for your binary in the matching version release on GitHub.
       See the "source" link at the top of the orb registry for a link to the repo.
 steps:
   - run:
