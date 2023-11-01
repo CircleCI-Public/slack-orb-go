@@ -10,9 +10,6 @@ import (
 	"gotest.tools/v3/assert/cmp"
 )
 
-// Check Slack API docs to come up with a list of responses we support and then add test here
-// ie Channel does not exist etc. 
-// validation for slack notification package
 func TestPostMessage(t *testing.T) {
 	// Create a new Message
 	s := &Message{
