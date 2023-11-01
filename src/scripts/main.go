@@ -67,7 +67,6 @@ func main() {
 	modifiedJSON, err := slackNotification.BuildMessageBody()
 	if err != nil {
 		log.Fatalf("failed to build message body: %v", err)
-		os.Exit(0)
 	}
 	
 	slackMessage := slack.Message{
