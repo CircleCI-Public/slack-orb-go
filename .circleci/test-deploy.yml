@@ -39,6 +39,7 @@ jobs:
           name: Build Latest
           command: |
             go build -o ./.circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go ./src/scripts/main.go
+            chmod +x ./.circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go
             echo "export SLACK_CURRENT_SHA=$(sha256sum ./.circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go | awk '{print $1}')" >> $BASH_ENV
           when: always      
       - slack/notify:
