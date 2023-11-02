@@ -108,6 +108,8 @@ binary="$orb_bin_dir/$repo_name"
 
 
 if [ ! -f "$binary" ]; then
+  print_warn "No binary found in $binary, downloading from $repo_url."
+  print_warn "Consider caching the binary for future runs."
   mkdir -p "$orb_bin_dir"
   if ! determine_http_client; then
     print_error "cURL or wget is required to download the Slack binary."
