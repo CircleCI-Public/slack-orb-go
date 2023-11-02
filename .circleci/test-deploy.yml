@@ -40,8 +40,34 @@ jobs:
       - run:
           name: Build Latest
           command: |
-            go build -o ./.circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go ./src/scripts/main.go
-            echo "export SLACK_BIN_CHECKSUM=$(sha256sum .circleci/orbs/circleci/slack/Linux/x86_64/slack-orb-go | cut -d ' ' -f 1)" >> $BASH_ENV
+            detect_os() {
+              detected_platform="$(uname -s | tr '[:upper:]' '[:lower:]')"
+              case "$detected_platform" in
+              linux*) PLATFORM=Linux ;;
+              darwin*) PLATFORM=Darwin ;;
+              msys* | cygwin*) PLATFORM=Windows ;;
+              *) return 1 ;;
+              esac
+            }
+
+            detect_arch() {
+              detected_arch="$(uname -m)"
+              case "$detected_arch" in
+              x86_64 | amd64) ARCH=x86_64 ;;
+              i386 | i486 | i586 | i686) ARCH=i386 ;;
+              arm64 | aarch64) ARCH=arm64 ;;
+              arm*) ARCH=arm ;;
+              *) return 1 ;;
+              esac
+            }
+
+            detect_os
+            detect_arch
+
+            set -x
+            go build -o ./.circleci/orbs/circleci/slack/$PLATFORM/$ARCH/slack-orb-go ./src/scripts/main.go
+            set +x
+            echo "export SLACK_BIN_CHECKSUM=$(sha256sum .circleci/orbs/circleci/slack/$PLATFORM/$ARCH/slack-orb-go | cut -d ' ' -f 1)" >> $BASH_ENV
           when: always
       - slack/notify:
           debug: true
