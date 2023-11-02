@@ -82,6 +82,14 @@ print_success() {
   printf "${green}%s${normal}\n" "$1"
 }
 
+# Print an error message
+# $1: The error message to print
+print_error() {
+  red="\033[0;31m"
+  normal="\033[0m"
+  printf "${red}%s${normal}\n" "$1"
+}
+
 print_warn "This is an experimental version of the Slack Orb in Go."
 print_warn "Thank you for trying it out and please provide feedback to us at https://github.com/CircleCI-Public/slack-orb-go/issues"
 
