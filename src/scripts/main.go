@@ -90,6 +90,17 @@ func main() {
 	}
 
 	for _, channel := range slackMessage.Channels {
-		slackMessage.PostMessage(channel)
+		statusCode, err := slackMessage.PostMessage(channel)
+		if err != nil {
+			if statusCode != 0 {
+				fmt.Println("Received status code: ", statusCode)
+				log.Fatalf("%v",err)
+			} else {
+				log.Fatalf("%v",err)
+			}
+		} else {
+		fmt.Println("Received status code: 200")
+		fmt.Println("Successfully posted message to channel: ", channel)
+		}
 	}
 }

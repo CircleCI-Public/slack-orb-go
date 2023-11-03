@@ -1,10 +1,11 @@
 package slack
 
 import (
+	"context"
 	"fmt"
 	"os"
-
-	"github.com/CircleCI-Public/slack-orb-go/src/scripts/httputils"
+	"time"
+	"github.com/circleci/ex/httpclient"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
 )
 
@@ -15,23 +16,56 @@ type Message struct {
 	Channels     []string
 }
 
-func (s *Message) PostMessage(channel string) {
-	jsonWithChannel, _ := jsonutils.ApplyFunctionToJSON(s.Template, jsonutils.AddRootProperty("channel", channel))
-	fmt.Printf("Posting the following JSON to Slack:\n%s\n", jsonWithChannel)
+type SlackError struct {
+	ErrorMessage	string
+	Err				error		
+}
 
-	headers := map[string]string{
-		"Content-Type":  "application/json",
-		"Authorization": "Bearer " + s.AccessToken,
+func (e *SlackError) Error () string {
+	return fmt.Sprintf("Error posting to Slack: %v\nSlack API response: %s", e.Err, e.ErrorMessage)
+}
+type SlackResponse struct {
+	Ok      bool   `json:"ok"`
+	Error string `json:"error"`
+}
+
+func (s *Message) PostMessage(channel string) (int, error) {
+	jsonWithChannel, err := jsonutils.ApplyFunctionToJSON(s.Template, jsonutils.AddRootProperty("channel", channel))
+	if err != nil {
+		return 0, err
 	}
-	response, statusCode, _ := httputils.SendHTTPRequest("POST", "https://slack.com/api/chat.postMessage", jsonWithChannel, headers)
-	fmt.Printf("Slack API response:\nStatus Code: %d\n%s\n", statusCode, response)
+	fmt.Printf("Posting the following JSON to Slack:\n%s\n", jsonWithChannel)
+	
+	var response SlackResponse
+	
+	client := httpclient.New(httpclient.Config{
+			Name:		"Slack Client",
+			BaseURL: 	"https://slack.com",
+			AuthToken:	s.AccessToken,
+			AcceptType:	"application/json",
+			Timeout:     time.Second * 10,
+	})
 
-	errorMsg, _ := jsonutils.ApplyFunctionToJSON(response, jsonutils.ExtractRootProperty("error"))
-	if errorMsg != "" {
-		fmt.Printf("Slack API returned an error message:\nStatus Code: %d\\n%s", statusCode, errorMsg)
-		fmt.Println("\n\nView the Setup Guide: https://github.com/CircleCI-Public/slack-orb/wiki/Setup")
-		if !s.IgnoreErrors {
+	req := httpclient.NewRequest("POST", "/api/chat.postMessage",
+		httpclient.Body(jsonWithChannel),
+		httpclient.Header("Content-Type", "application/json"),
+		httpclient.JSONDecoder(&response),
+	)
+
+	err = client.Call(context.Background(),req)
+	fmt.Printf("This is the error: %v", err)
+	if err != nil {
+		if !s.IgnoreErrors{
 			os.Exit(1)
 		}
+
+		httpErr, ok := err.(*httpclient.HTTPError)
+		if ok && err != nil  {
+			slackErr := &SlackError{ErrorMessage: httpErr.Error(), Err: err}
+			return httpErr.Code(), slackErr
+		}
+		slackErr := &SlackError{ErrorMessage: response.Error, Err: err}
+		return 0, slackErr
 	}
+	return 200, nil
 }
