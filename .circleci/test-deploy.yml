@@ -339,7 +339,7 @@ workflows:
           requires: [unit-tests]
           matrix:
             parameters:
-              runner: [cimg, windows]
+              runner: [cimg, windows, mac]
       - orb-tools/pack:
           filters: *release-filters
       - build-release:
