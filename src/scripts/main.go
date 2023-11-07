@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/config"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/slack"
+	"github.com/circleci/ex/config/secret"
 )
 
 func main() {
@@ -68,13 +70,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to build message body: %v", err)
 	}
-	
-	slackMessage := slack.Message{
-		Template: modifiedJSON,
-		AccessToken: conf.AccessToken,
-		IgnoreErrors: ignoreErrors,
-		Channels: channels,
-	}
+
+	client := slack.NewClient(slack.ClientOptions{SlackToken: secret.String(conf.AccessToken)})
 
 	if !slackNotification.IsEventMatchingStatus() {
 		message := fmt.Sprintf("The job status %q does not match the status set to send alerts %q.", slackNotification.Status, slackNotification.Event)
@@ -89,17 +86,15 @@ func main() {
 		os.Exit(0)
 	}
 
-	for _, channel := range slackMessage.Channels {
-		statusCode, err := slackMessage.PostMessage(channel)
+	for _, channel := range channels {
+		err := client.PostMessage(context.Background(), modifiedJSON, channel)
 		if err != nil {
-			if statusCode != 0 {
-				fmt.Println("Received status code: ", statusCode)
-				log.Fatalf("%v",err)
+			if !ignoreErrors {
+				log.Fatalf("Error: %v", err)
 			} else {
-				log.Fatalf("%v",err)
+				fmt.Printf("error: %v", err)
 			}
 		} else {
-		fmt.Println("Received status code: 200")
 		fmt.Println("Successfully posted message to channel: ", channel)
 		}
 	}

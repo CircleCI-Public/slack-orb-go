@@ -1,6 +1,6 @@
 module github.com/CircleCI-Public/slack-orb-go
 
-go 1.21.1
+go 1.21
 
 require github.com/joho/godotenv v1.5.1
 
@@ -8,6 +8,7 @@ require (
 	github.com/a8m/envsubst v1.4.2
 	github.com/circleci/ex v1.0.8223-e2e654d
 	github.com/stretchr/testify v1.8.4
+	gotest.tools/v3 v3.5.1
 )
 
 require (
@@ -20,6 +21,17 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a // indirect
+	github.com/facebookgo/limitgroup v0.0.0-20150612190941-6abd8d71ec01 // indirect
+	github.com/facebookgo/muster v0.0.0-20150708232844-fd3d7953fd52 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/honeycombio/beeline-go v1.13.0 // indirect
+	github.com/honeycombio/dynsampler-go v0.5.1 // indirect
+	github.com/honeycombio/libhoney-go v1.20.0 // indirect
+	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
+	gopkg.in/alexcesaro/statsd.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
