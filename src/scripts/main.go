@@ -70,23 +70,15 @@ func main() {
 
 	modifiedJSON, err := slackNotification.BuildMessageBody()
 	if err != nil {
-		log.Fatalf("failed to build message body: %v", err)
+		if strings.HasPrefix(err.Error(), "Exiting without posting to Slack") {
+			fmt.Println(err)
+			os.Exit(0)
+		} else {
+			log.Fatalf("Failed to build message body: %v", err)
+		}
 	}
 
 	client := slack.NewClient(slack.ClientOptions{SlackToken: secret.String(conf.AccessToken)})
-
-	if !slackNotification.IsEventMatchingStatus() {
-		message := fmt.Sprintf("The job status %q does not match the status set to send alerts %q.", slackNotification.Status, slackNotification.Event)
-		fmt.Println(message)
-		fmt.Println("Exiting without posting to Slack...")
-		os.Exit(0)
-	}
-
-	if !slackNotification.IsPostConditionMet() {
-		fmt.Println("The post condition is not met. Neither the branch nor the tag matches the pattern or the match is inverted.")
-		fmt.Println("Exiting without posting to Slack...")
-		os.Exit(0)
-	}
 
 	for _, channel := range channels {
 		fmt.Printf("Posting the following JSON to Slack:\n")
@@ -100,7 +92,7 @@ func main() {
 			if !ignoreErrors {
 				log.Fatalf("Error: %v", err)
 			} else {
-				fmt.Printf("error: %v", err)
+				fmt.Printf("Error: %v", err)
 			}
 		} else {
 			fmt.Println("Successfully posted message to channel: ", channel)

@@ -1,6 +1,7 @@
 package slack
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
@@ -50,6 +51,17 @@ func (j *Notification) BuildMessageBody() (string, error) {
 	// Add a "channel" property with a nested "myChannel" property
 	modifiedJSON, err := jsonutils.ApplyFunctionToJSON(templateWithExpandedVars, jsonutils.AddRootProperty("channel", "my_channel"))
 	if err != nil {
+		return "", err
+	}
+
+	if !j.IsEventMatchingStatus() {
+		message := fmt.Sprintf("Exiting without posting to Slack: The job status %q does not match the status set to send alerts %q.", j.Status, j.Event)
+		err = errors.New(message)
+		return "", err
+	}
+
+	if !j.IsPostConditionMet() {
+		err = errors.New("Exiting without posting to Slack: The post condition is not met. Neither the branch nor the tag matches the pattern or the match is inverted.")
 		return "", err
 	}
 
