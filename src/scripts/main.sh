@@ -18,9 +18,13 @@ determine_http_client() {
 # $3: The HTTP client to use (curl or wget)
 download_binary() {
   if [ "$3" = "curl" ]; then
+    set -x
     curl --fail --retry 3 -L -o "$1" "$2"
+    set +x
   elif [ "$3" = "wget" ]; then
+    set -x
     wget --tries=3 --timeout=10 --quiet -O "$1" "$2"
+    set +x
   else
     return 1
   fi
@@ -39,8 +43,8 @@ detect_os() {
 detect_arch() {
   detected_arch="$(uname -m)"
   case "$detected_arch" in
-  x86_64) ARCH=x86_64 ;;
-  i386 | i486 | i586 | i686) ARCH=x86 ;;
+  x86_64 | amd64) ARCH=x86_64 ;;
+  i386 | i486 | i586 | i686) ARCH=i386 ;;
   arm64 | aarch64) ARCH=arm64 ;;
   arm*) ARCH=arm ;;
   *) return 1 ;;
@@ -52,53 +56,70 @@ detect_arch() {
 # $2: The GitHub repository
 # $3: The HTTP client to use (curl or wget)
 determine_release_latest_version() {
-  url="https://github.com/$1/$2/releases/latest"
-
   if [ "$3" = "curl" ]; then
     LATEST_VERSION="$(curl --fail --retry 3 -Ls -o /dev/null -w '%{url_effective}' "https://github.com/$1/$2/releases/latest" | sed 's:.*/::')"
   elif [ "$3" = "wget" ]; then
-    effective_url="$(wget --tries=3 --max-redirect=1000 --server-response -O /dev/null "$url" 2>&1 | awk '/Location: /{print $2}' | tail -1)"
-    LATEST_VERSION="$(printf '%s' "$effective_url" | sed 's:.*/::')"
+    LATEST_VERSION="$(wget -qO- "https://api.github.com/repos/$1/$2/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
   else
     printf '%s\n' "Invalid HTTP client specified."
     return 1
   fi
 }
 
+# Print a warning message
+# $1: The warning message to print
+print_warn() {
+  yellow="\033[1;33m"
+  normal="\033[0m"
+  printf "${yellow}%s${normal}\n" "$1"
+}
+
+# Print a success message
+# $1: The success message to print
+print_success() {
+  green="\033[0;32m"
+  normal="\033[0m"
+  printf "${green}%s${normal}\n" "$1"
+}
+
+# Print an error message
+# $1: The error message to print
+print_error() {
+  red="\033[0;31m"
+  normal="\033[0m"
+  printf "${red}%s${normal}\n" "$1"
+}
+
+print_warn "This is an experimental version of the Slack Orb in Go."
+print_warn "Thank you for trying it out and please provide feedback to us at https://github.com/CircleCI-Public/slack-orb-go/issues"
+
+if ! detect_os; then
+  printf '%s\n' "Unsupported operating system: $(uname -s)."
+  exit 1
+fi
+printf '%s\n' "Operating system: $PLATFORM."
+
+if ! detect_arch; then
+  printf '%s\n' "Unsupported architecture: $(uname -m)."
+  exit 1
+fi
+printf '%s\n' "Architecture: $ARCH."
+
 base_dir="$(printf "%s" "$CIRCLE_WORKING_DIRECTORY" | sed "s|~|$HOME|")"
+orb_bin_dir="$base_dir/.circleci/orbs/circleci/slack/$PLATFORM/$ARCH"
 repo_org="CircleCI-Public"
 repo_name="slack-orb-go"
+binary="$orb_bin_dir/$repo_name"
+input_sha256=$(circleci env subst "$SLACK_PARAM_SHA256")
 
-# If the tag is empty, then we are building the Slack binary
-# Therefore we will manually build and execute the binary for testing purposes
-# Otherwise, we will download the binary from GitHub
-binary=""
-if [ "$SLACK_PARAM_DEVELOPER_MODE" -eq 1 ]; then
-  binary="$repo_name"
-  printf '%s\n' "Building $binary binary..."
-  if ! go build -o "$binary" ./src/scripts/main.go; then
-    printf '%s\n' "Failed to build $binary binary."
-    exit 1
-  fi
-else
+if [ ! -f "$binary" ]; then
+  mkdir -p "$orb_bin_dir"
   if ! determine_http_client; then
     printf '%s\n' "cURL or wget is required to download the Slack binary."
     printf '%s\n' "Please install cURL or wget and try again."
     exit 1
   fi
   printf '%s\n' "HTTP client: $HTTP_CLIENT."
-
-  if ! detect_os; then
-    printf '%s\n' "Unsupported operating system: $(uname -s)."
-    exit 1
-  fi
-  printf '%s\n' "Operating system: $PLATFORM."
-
-  if ! detect_arch; then
-    printf '%s\n' "Unsupported architecture: $(uname -m)."
-    exit 1
-  fi
-  printf '%s\n' "Architecture: $ARCH."
 
   if ! determine_release_latest_version "$repo_org" "$repo_name" "$HTTP_CLIENT"; then
     printf '%s\n' "Failed to determine latest version."
@@ -107,18 +128,39 @@ else
   printf '%s\n' "Release's latest version: $LATEST_VERSION."
 
   # TODO: Make the version configurable via command parameter
-  repo_url="https://github.com/$repo_org/$repo_name/releases/download/$LATEST_VERSION/$repo_name-$PLATFORM-$ARCH"
+  repo_url="https://github.com/$repo_org/$repo_name/releases/download/$LATEST_VERSION/${repo_name}_${PLATFORM}_${ARCH}"
+  [ "$PLATFORM" = "Windows" ] && repo_url="$repo_url.exe"
   printf '%s\n' "Release URL: $repo_url."
 
-  # TODO: Check the md5sum of the downloaded binary
-  binary_download_dir="$(mktemp -d -t "$repo_name".XXXXXXXXXX)"
-  binary="$binary_download_dir/$repo_name"
   if ! download_binary "$binary" "$repo_url" "$HTTP_CLIENT"; then
     printf '%s\n' "Failed to download $repo_name binary from GitHub."
     exit 1
   fi
 
-  printf '%s\n' "Downloaded $repo_name binary to $binary_download_dir"
+  printf '%s\n' "Downloaded $repo_name binary to $orb_bin_dir"
+else
+  printf '%s\n' "Skipping binary download since it already exists at $binary."
+fi
+
+# Validate binary
+## This validates, even if the binary already existed before.
+## This can help with cache integrity but was also a convenience for testing where the binary will never be downloaded.
+if [ -n "$input_sha256" ]; then
+  actual_sha256=""
+  if [ "$PLATFORM" = "Windows" ]; then
+    actual_sha256=$(powershell.exe -Command "(Get-FileHash -Path '$binary' -Algorithm SHA256).Hash.ToLower()")
+  else
+    actual_sha256=$(sha256sum "$binary" | cut -d' ' -f1)
+  fi
+
+  if [ "$actual_sha256" != "$input_sha256" ]; then
+    print_error "SHA256 checksum does not match. Expected $input_sha256 but got $actual_sha256"
+    exit 1
+  else
+    print_success "SHA256 checksum matches. Binary is valid."
+  fi
+else
+  print_warn "SHA256 checksum not provided. Skipping validation."
 fi
 
 printf '%s\n' "Making $binary binary executable..."
@@ -127,13 +169,13 @@ if ! chmod +x "$binary"; then
   exit 1
 fi
 
-printf '%s\n' "Executing \"$base_dir/$binary\" binary..."
-"$base_dir/$binary"
+printf '%s\n' "Executing \"$binary\" binary..."
+set -x
+"$binary"
 exit_code=$?
+set +x
 if [ $exit_code -ne 0 ]; then
   printf '%s\n' "Failed to execute $binary binary or it exited with a non-zero exit code."
 fi
 
-printf '%s\n' "Removing $binary binary..."
-rm -rf "$binary"
 exit $exit_code

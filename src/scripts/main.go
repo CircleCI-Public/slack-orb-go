@@ -88,6 +88,12 @@ func main() {
 
 	for _, channel := range channels {
 		err := client.PostMessage(context.Background(), modifiedJSON, channel)
+    fmt.Printf("Posting the following JSON to Slack:\n")
+		colorizedJSONWitChannel, err := jsonutils.Colorize(modifiedJSON)
+		if err != nil {
+			log.Fatalf("Error coloring JSON: %v", err)
+		}
+		fmt.Println(colorizedJSONWitChannel)
 		if err != nil {
 			if !ignoreErrors {
 				log.Fatalf("Error: %v", err)
