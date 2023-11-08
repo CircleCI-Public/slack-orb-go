@@ -1,26 +1,26 @@
 package slack
 
 import (
-	"errors"
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/circleci/ex/config/secret"
 	"github.com/circleci/ex/httpclient"
-	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
 
+	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
 )
 
 const defaultSlackURL = "https://slack.com/api"
 
-type  Client struct {
-	hc		 *httpclient.Client
+type Client struct {
+	hc *httpclient.Client
 }
 
 type ClientOptions struct {
-	BaseURL		string
-	SlackToken	secret.String
+	BaseURL    string
+	SlackToken secret.String
 }
 
 type APIResponse struct {
@@ -43,12 +43,12 @@ func NewClient(options ClientOptions) *Client {
 	return &Client{hc}
 }
 
-func (c *Client) PostMessage (ctx context.Context, message, channel string) error {
+func (c *Client) PostMessage(ctx context.Context, message, channel string) error {
 	jsonWithChannel, err := jsonutils.ApplyFunctionToJSON(message, jsonutils.AddRootProperty("channel", channel))
 	if err != nil {
 		return err
 	}
-	
+
 	var response APIResponse
 
 	req := httpclient.NewRequest("POST", "/chat.postMessage",

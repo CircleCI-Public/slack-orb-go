@@ -8,10 +8,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/circleci/ex/config/secret"
+
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/config"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/jsonutils"
 	"github.com/CircleCI-Public/slack-orb-go/src/scripts/slack"
-	"github.com/circleci/ex/config/secret"
 )
 
 func main() {
@@ -98,11 +99,11 @@ func main() {
 		if err != nil {
 			if !ignoreErrors {
 				log.Fatalf("Error: %v", err)
-				} else {
+			} else {
 				fmt.Printf("error: %v", err)
 			}
 		} else {
-		fmt.Println("Successfully posted message to channel: ", channel)
+			fmt.Println("Successfully posted message to channel: ", channel)
 		}
 	}
 }

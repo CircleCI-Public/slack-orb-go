@@ -87,11 +87,11 @@ func TestIsPostConditionMet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			sn := Notification{
-				Branch: tt.branch,
-				Tag: tt.tag,
+				Branch:        tt.branch,
+				Tag:           tt.tag,
 				BranchPattern: tt.branchPattern,
-				TagPattern: tt.tagPattern,
-				InvertMatch: tt.invertMatch,
+				TagPattern:    tt.tagPattern,
+				InvertMatch:   tt.invertMatch,
 			}
 			got := sn.IsPostConditionMet()
 			assert.Equal(t, tt.want, got)
