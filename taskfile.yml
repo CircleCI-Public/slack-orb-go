@@ -16,7 +16,7 @@ tasks:
       - "cd {{.TOOLS_DIR}} &&  gofmt -l -s -w {{.TOOLS_DIR}}"
       - '{{.BIN_DIR}}/gosimports -local "github.com/CircleCI-Public/slack-orb-go" -w {{.SRC_DIR}}'
       - go work sync
-  
+
   sync:
     deps: [install-devtools]
     cmds:
@@ -34,6 +34,8 @@ tasks:
 
   install-devtools:
     silent: true
+    generates:
+      - "{{.BIN_DIR}}/*"
     cmd: |
       tools=()
       while IFS='' read -r value; do
@@ -41,7 +43,7 @@ tasks:
       done < <(grep _ {{.TOOLS_DIR}}/tools.go | awk -F'"' '{print $2}')
 
       for pkg in "${tools[@]}"; do
-        #echo "Installing ${pkg}"
+        echo "Installing ${pkg}"
         (
           cd {{.TOOLS_DIR}}
           GOBIN="{{.BIN_DIR}}" go install "${pkg}" > /dev/null 2>&1

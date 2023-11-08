@@ -19,7 +19,20 @@ commands:
     steps:
       - run:
           name: "Install go-task"
-          command: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+          command: |
+            if ! [ -f ./bin/task ]; then
+              sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+            fi
+  save-bin-cache:
+    steps:
+      - save_cache:
+          key: devtool-bins-{{ checksum "./packages/tools/go.mod" }}
+          paths:
+            - ./bin
+  load-bin-cache:
+    steps:
+      - restore_cache:
+          key: devtool-bins-{{ checksum "./packages/tools/go.mod" }}
   go-sync:
     steps:
       - run:
@@ -33,6 +46,7 @@ jobs:
       tag: "1.21.0"
     steps:
       - checkout
+      - load-bin-cache
       - install-task
       - go-sync
       - run:
@@ -41,23 +55,27 @@ jobs:
       - run:
           name: "Lint golang source"
           command: ./bin/task lint
+      - save-bin-cache
   tidy:
     executor:
       name: go/default
       tag: "1.21.0"
     steps:
       - checkout
+      - load-bin-cache
       - install-task
       - go-sync
       - run:
           name: "Run tidy and verify no diffs result"
           command: ./bin/task tidy && git diff --exit-code
+      - save-bin-cache
   unit-tests:
     executor:
       name: go/default
       tag: "1.21.0"
     steps:
       - checkout
+      - load-bin-cache
       - install-task
       - run:
           name: go sync
@@ -65,6 +83,7 @@ jobs:
       - run:
           name: go test
           command: ./bin/task test
+      - save-bin-cache
   integration-test-templates:
     parameters:
       runner:
