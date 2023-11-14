@@ -7,7 +7,6 @@ parameters:
   template_var:
     description: |
       Provide an environment variable containing a custom template to use for the notification.
-      Do not include the "$" symbol.
       This parameter takes precedence over the "template_path", "template_inline", and "template" parameters.
     type: string
     default: ""
