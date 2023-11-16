@@ -28,6 +28,11 @@ type Config struct {
 	TagPattern               string
 	IgnoreErrorsStr          string
 	SlackAPIBaseUrl          string
+
+	TemplateVar    string
+	TemplatePath   string
+	TemplateInline string
+	TemplateName   string
 }
 
 // NewConfig loads configuration from environment variables.
@@ -56,6 +61,11 @@ func NewConfig() (*Config, error) {
 		TagPattern:               os.Getenv("SLACK_PARAM_TAGPATTERN"),
 		IgnoreErrorsStr:          os.Getenv("SLACK_PARAM_IGNORE_ERRORS"),
 		SlackAPIBaseUrl:          os.Getenv("TEST_SLACK_API_BASE_URL"),
+
+		TemplateVar:    os.Getenv("SLACK_STR_TEMPLATE_VAR"),
+		TemplatePath:   os.Getenv("SLACK_STR_TEMPLATE_PATH"),
+		TemplateInline: os.Getenv("SLACK_STR_TEMPLATE_INLINE"),
+		TemplateName:   os.Getenv("SLACK_STR_TEMPLATE"),
 	}, nil
 }
 
@@ -87,6 +97,11 @@ func (c *Config) expandEnvVariables() error {
 		"InvertMatchStr":           &c.InvertMatchStr,
 		"IgnoreErrorsStr":          &c.IgnoreErrorsStr,
 		"TagPattern":               &c.TagPattern,
+
+		"TemplateVar":    &c.TemplateVar,
+		"TemplatePath":   &c.TemplatePath,
+		"TemplateInline": &c.TemplateInline, // might need to remove this
+		"TemplateName":   &c.TemplateName,
 	}
 
 	for fieldName, fieldValue := range fields {

@@ -40,6 +40,11 @@ func main() {
 		InvertMatch:              invertMatch,
 		InlineTemplate:           conf.InlineTemplate,
 		EnvVarContainingTemplate: conf.EnvVarContainingTemplate,
+
+		TemplateVar:    conf.TemplateVar,
+		TemplatePath:   conf.TemplatePath,
+		TemplateInline: conf.TemplateInline,
+		TemplateName:   conf.TemplateName,
 	}
 
 	modifiedJSON, err := slackNotification.BuildMessageBody()
