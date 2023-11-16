@@ -18,6 +18,11 @@ type Notification struct {
 	Template                 string
 	InlineTemplate           string
 	EnvVarContainingTemplate string
+
+	TemplateVar    string
+	TemplatePath   string
+	TemplateInline string
+	TemplateName   string
 }
 
 func (j *Notification) IsEventMatchingStatus() bool {
@@ -38,7 +43,7 @@ var (
 
 func (j *Notification) BuildMessageBody() (string, error) {
 	// Build the message body
-	template, err := utils.DetermineTemplate(j.InlineTemplate, j.Status, j.EnvVarContainingTemplate)
+	template, err := utils.DetermineTemplate(j.TemplateVar, j.TemplatePath, j.TemplateInline, j.TemplateName, j.Status)
 	if err != nil {
 		return "", err
 	}

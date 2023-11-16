@@ -70,21 +70,41 @@ func InferTemplateEnvVarFromStatus(jobStatus string) (string, error) {
 	}
 }
 
-func DetermineTemplate(inlineTemplate, jobStatus, envVarContainingTemplate string) (string, error) {
-	if inlineTemplate != "" {
-		return inlineTemplate, nil
+func DetermineTemplate(templateVar, templatePath, templateInline, templateName, jobStatus string) (string, error) {
+	if templateVar != "" {
+		template := os.Getenv(templateVar)
+		if template == "" {
+			return "", fmt.Errorf("the template %q is empty", template)
+		}
+		return template, nil
 	}
 
-	if envVarContainingTemplate == "" {
-		var err error
-		envVarContainingTemplate, err = InferTemplateEnvVarFromStatus(jobStatus)
-		if err != nil {
-			return "", fmt.Errorf("%s: %w", "DetermineTemplate", err)
+	if templatePath != "" {
+		if FileExists(templatePath) {
+			template, err := os.ReadFile(templatePath)
+			if err != nil {
+				return "", fmt.Errorf("%s: %w", "DetermineTemplate", err)
+			}
+			return string(template), nil
 		}
+		return "", fmt.Errorf("the template %q does not exist", templatePath)
 	}
-	template := os.Getenv(envVarContainingTemplate)
-	if template == "" {
-		return "", fmt.Errorf("the template %q is empty", template)
+
+	if templateInline != "" {
+		return templateInline, nil
+	}
+
+	if templateName != "" {
+		template := os.Getenv(templateName)
+		if template == "" {
+			return "", fmt.Errorf("the template %q is empty", template)
+		}
+		return template, nil
+	}
+
+	template, err := InferTemplateEnvVarFromStatus(jobStatus)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", "DetermineTemplate", err)
 	}
 	return template, nil
 }
