@@ -98,7 +98,6 @@ func (c *Config) expandEnvVariables() error {
 
 		"TemplateVar":    &c.TemplateVar,
 		"TemplatePath":   &c.TemplatePath,
-		"TemplateInline": &c.TemplateInline, // might need to remove this
 		"TemplateName":   &c.TemplateName,
 	}
 
