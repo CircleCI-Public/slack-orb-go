@@ -106,7 +106,7 @@ func DetermineTemplate(templateVar, templatePath, templateInline, templateName, 
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", "DetermineTemplate", err)
 	}
-	return template, nil
+	return os.Getenv(template), nil
 }
 
 func ExtractRootProperty(propertyName string) func(interface{}) interface{} {
