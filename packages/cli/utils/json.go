@@ -76,7 +76,7 @@ func DetermineTemplate(inlineTemplate, jobStatus, envVarContainingTemplate strin
 	if template == "" {
 		return "", fmt.Errorf("the template %q is empty", template)
 	}
-	return template, nil
+	return os.Getenv(template), nil
 }
 
 func ExtractRootProperty(propertyName string) func(interface{}) interface{} {
