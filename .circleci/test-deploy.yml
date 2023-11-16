@@ -117,7 +117,7 @@ jobs:
           ignore_errors: false
           step_name: "Custom template with group mention"
           event: always
-          custom: |
+          template_inline: |
             {
               "blocks": [
                 {
@@ -170,7 +170,7 @@ jobs:
           ignore_errors: false
           step_name: "Custom template with env var in the message"
           event: always
-          custom: >
+          template_inline: >
             {
               "blocks": [
                 {
@@ -194,7 +194,7 @@ jobs:
           ignore_errors: false
           step_name: "Dynamic template with environment variable"
           event: always
-          template: MY_ORB_TEMPLATE
+          template_var: MY_ORB_TEMPLATE
       - slack/notify:
           debug: true
           ignore_errors: false
@@ -217,7 +217,7 @@ jobs:
           ignore_errors: false
           step_name: "Notify with multiline string"
           event: always
-          custom: >
+          template_inline: >
             {
               "blocks": [
                 {
@@ -239,7 +239,7 @@ jobs:
           ignore_errors: false
           step_name: "Notify with double-quoted string"
           event: always
-          custom: >
+          template_inline: >
             {
               "blocks": [
                 {
@@ -261,7 +261,7 @@ jobs:
           ignore_errors: false
           step_name: "Notify with backslashes string"
           event: always
-          custom: >
+          template_inline: >
             {
               "blocks": [
                 {
@@ -283,7 +283,7 @@ jobs:
           ignore_errors: false
           step_name: "Notify with custom message coming from sub-shell and template variable"
           event: always
-          custom: |
+          template_inline: |
             {
               "blocks": [
                 {
@@ -307,7 +307,7 @@ jobs:
           ignore_errors: false
           step_name: "Notify with only custom message coming from sub-shell"
           event: always
-          custom: |
+          template_inline: |
             {
               "type": "mrkdwn",
               "text": "$(cat /tmp/msg)"
