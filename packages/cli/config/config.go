@@ -96,9 +96,9 @@ func (c *Config) expandEnvVariables() error {
 		"IgnoreErrorsStr":          &c.IgnoreErrorsStr,
 		"TagPattern":               &c.TagPattern,
 
-		"TemplateVar":    &c.TemplateVar,
-		"TemplatePath":   &c.TemplatePath,
-		"TemplateName":   &c.TemplateName,
+		"TemplateVar":  &c.TemplateVar,
+		"TemplatePath": &c.TemplatePath,
+		"TemplateName": &c.TemplateName,
 	}
 
 	for fieldName, fieldValue := range fields {
