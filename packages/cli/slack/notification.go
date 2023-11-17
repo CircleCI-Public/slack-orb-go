@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/CircleCI-Public/slack-orb-go/packages/cli/utils"
+	"github.com/CircleCI-Public/slack-orb-go/packages/cli/templates"
 )
 
 type Notification struct {
@@ -39,7 +40,7 @@ var (
 
 func (j *Notification) BuildMessageBody() (string, error) {
 	// Build the message body
-	template, err := utils.DetermineTemplate(j.TemplateVar, j.TemplatePath, j.TemplateInline, j.TemplateName, j.Status)
+	template, err := templates.DetermineTemplate(j.TemplateVar, j.TemplatePath, j.TemplateInline, j.TemplateName, j.Status)
 	if err != nil {
 		return "", err
 	}

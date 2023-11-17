@@ -9,8 +9,6 @@ import (
 	"github.com/TylerBrock/colorjson"
 	"github.com/a8m/envsubst"
 	"github.com/fatih/color"
-
-	"github.com/CircleCI-Public/slack-orb-go/packages/cli/templates"
 )
 
 func ExpandEnvVarsInInterface(value interface{}) interface{} {
@@ -61,37 +59,7 @@ func ApplyFunctionToJSON(messageBody string, modifier func(interface{}) interfac
 	}
 }
 
-func DetermineTemplate(templateVar, templatePath, templateInline, templateName, jobStatus string) (string, error) {
-	if templateVar != "" {
-		template := os.Getenv(templateVar)
-		if template == "" {
-			return "", fmt.Errorf("the template %q is empty", template)
-		}
-		return template, nil
-	}
 
-	if templatePath != "" {
-		if !FileExists(templatePath) {
-			return "", fmt.Errorf("the template %q does not exist", templatePath)
-		}
-		template, err := os.ReadFile(templatePath)
-		if err != nil {
-			return "", fmt.Errorf("%s: %w", "DetermineTemplate", err)
-		}
-		return string(template), nil
-	}
-
-	if templateInline != "" {
-		return templateInline, nil
-	}
-
-	template := templates.ForStatus(jobStatus) //TODO: code re-org
-	if template != "" {
-		return template, nil
-	}
-
-	return "", fmt.Errorf("could not determine template. Please specify a template and try again")
-}
 
 func ExtractRootProperty(propertyName string) func(interface{}) interface{} {
 	return func(data interface{}) interface{} {
