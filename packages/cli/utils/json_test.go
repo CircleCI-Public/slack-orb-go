@@ -8,8 +8,6 @@ import (
 	"testing"
 
 	"github.com/fatih/color"
-
-	// "github.com/CircleCI-Public/slack-orb-go/packages/cli/templates"
 )
 
 func TestAddRootProperty(t *testing.T) {
