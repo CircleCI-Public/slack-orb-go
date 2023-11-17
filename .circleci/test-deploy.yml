@@ -193,7 +193,7 @@ jobs:
           ignore_errors: false
           step_name: "Dynamic template with environment variable"
           event: always
-          template_path: packages/orb/message_templates/basic_success_1.json
+          template_path: packages/cli/templates/basic_success_1.json
       - slack/notify:
           debug: true
           ignore_errors: false
