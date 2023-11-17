@@ -187,14 +187,13 @@ jobs:
           command: |
             echo 'export COMMIT_MESSAGE="This text comes from an environment variable"' >> $BASH_ENV
             echo 'export SLACK_PARAM_MENTIONS="$COMMIT_MESSAGE"' >> $BASH_ENV
-            echo "export MY_ORB_TEMPLATE='$(cat packages/orb/message_templates/basic_success_1.json)'" >> $BASH_ENV
           when: always
       - slack/notify:
           debug: true
           ignore_errors: false
           step_name: "Dynamic template with environment variable"
           event: always
-          template_var: MY_ORB_TEMPLATE
+          template_path: packages/orb/message_templates/basic_success_1.json
       - slack/notify:
           debug: true
           ignore_errors: false
