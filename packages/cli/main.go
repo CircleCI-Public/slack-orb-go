@@ -31,16 +31,13 @@ func main() {
 	channels := strings.Split(conf.ChannelsStr, ",")
 
 	slackNotification := slack.Notification{
-		Status:                   conf.JobStatus,
-		Branch:                   conf.JobBranch,
-		Tag:                      conf.JobTag,
-		Event:                    conf.EventToSendMessage,
-		BranchPattern:            conf.BranchPattern,
-		TagPattern:               conf.TagPattern,
-		InvertMatch:              invertMatch,
-		InlineTemplate:           conf.InlineTemplate,
-		EnvVarContainingTemplate: conf.EnvVarContainingTemplate,
-
+		Status:         conf.JobStatus,
+		Branch:         conf.JobBranch,
+		Tag:            conf.JobTag,
+		Event:          conf.EventToSendMessage,
+		BranchPattern:  conf.BranchPattern,
+		TagPattern:     conf.TagPattern,
+		InvertMatch:    invertMatch,
 		TemplateVar:    conf.TemplateVar,
 		TemplatePath:   conf.TemplatePath,
 		TemplateInline: conf.TemplateInline,

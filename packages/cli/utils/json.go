@@ -61,22 +61,36 @@ func ApplyFunctionToJSON(messageBody string, modifier func(interface{}) interfac
 	}
 }
 
-func DetermineTemplate(inlineTemplate, jobStatus, envVarContainingTemplate string) (string, error) {
-	if inlineTemplate != "" {
-		return inlineTemplate, nil
+func DetermineTemplate(templateVar, templatePath, templateInline, templateName, jobStatus string) (string, error) {
+	if templateVar != "" {
+		template := os.Getenv(templateVar)
+		if template == "" {
+			return "", fmt.Errorf("the template %q is empty", template)
+		}
+		return template, nil
 	}
 
-	if envVarContainingTemplate == "" {
-		template := templates.ForStatus(jobStatus) //TODO: code re-org
-		if template != "" {
-			return template, nil
+	if templatePath != "" {
+		if !FileExists(templatePath) {
+			return "", fmt.Errorf("the template %q does not exist", templatePath)
 		}
+		template, err := os.ReadFile(templatePath)
+		if err != nil {
+			return "", fmt.Errorf("%s: %w", "DetermineTemplate", err)
+		}
+		return string(template), nil
 	}
-	template := os.Getenv(envVarContainingTemplate)
-	if template == "" {
-		return "", fmt.Errorf("the template %q is empty", template)
+
+	if templateInline != "" {
+		return templateInline, nil
 	}
-	return os.Getenv(template), nil
+
+	template := templates.ForStatus(jobStatus) //TODO: code re-org
+	if template != "" {
+		return template, nil
+	}
+
+	return "", fmt.Errorf("could not determine template. Please specify a template and try again")
 }
 
 func ExtractRootProperty(propertyName string) func(interface{}) interface{} {

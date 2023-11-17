@@ -8,17 +8,13 @@ import (
 )
 
 type Notification struct {
-	Status                   string
-	Branch                   string
-	Tag                      string
-	Event                    string
-	BranchPattern            string
-	TagPattern               string
-	InvertMatch              bool
-	Template                 string
-	InlineTemplate           string
-	EnvVarContainingTemplate string
-
+	Status         string
+	Branch         string
+	Tag            string
+	Event          string
+	BranchPattern  string
+	TagPattern     string
+	InvertMatch    bool
 	TemplateVar    string
 	TemplatePath   string
 	TemplateInline string
