@@ -59,8 +59,6 @@ func ApplyFunctionToJSON(messageBody string, modifier func(interface{}) interfac
 	}
 }
 
-
-
 func ExtractRootProperty(propertyName string) func(interface{}) interface{} {
 	return func(data interface{}) interface{} {
 		jsonMap, ok := data.(map[string]interface{})
