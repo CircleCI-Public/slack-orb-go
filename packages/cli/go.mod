@@ -7,7 +7,7 @@ require github.com/joho/godotenv v1.5.1
 require (
 	github.com/a8m/envsubst v1.4.2
 	github.com/charmbracelet/log v0.3.1
-	github.com/circleci/ex v1.0.8437-fe84df1
+	github.com/circleci/ex v1.0.8525-a7e8730
 	github.com/fatih/color v1.16.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/muesli/termenv v0.15.2
@@ -74,7 +74,7 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.16.0 // indirect
+	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
