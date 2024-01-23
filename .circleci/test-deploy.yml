@@ -199,7 +199,7 @@ jobs:
       - run:
           name: Dynamically populate the mention and export the template as an environment variable
           command: |
-            echo 'export COMMIT_MESSAGE="This text comes from an environment variable"' >> $BASH_ENV
+            echo 'export COMMIT_MESSAGE="This text comes from an environment variable - $CIRCLE_JOB"' >> $BASH_ENV
             echo 'export SLACK_STR_MENTIONS="$COMMIT_MESSAGE"' >> $BASH_ENV
           when: always
       - slack/notify:
