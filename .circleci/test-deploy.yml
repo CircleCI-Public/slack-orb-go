@@ -252,7 +252,8 @@ jobs:
       - run:
           name: Export variable with double quotes
           command: |
-            echo 'export DOUBLE_QUOTES_STRING="Hello There! My name is \"Potato\""' >> "$BASH_ENV"
+            printf 'export DOUBLE_QUOTES_STRING="Hello There! My name is \"Potato\""\n' >> "$BASH_ENV"
+
           when: always
       - slack/notify:
           debug: true
