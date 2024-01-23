@@ -223,7 +223,7 @@ jobs:
       - run:
           name: Export variable with a multiline string
           command: |
-            echo 'export MULTILINE_STRING="Line 1.\nLine 2.\nLine 3."' >> "$BASH_ENV"
+            printf 'export MULTILINE_STRING="Line 1.\nLine 2.\nLine 3."\n' >> "$BASH_ENV"
           when: always
       - slack/notify:
           debug: true
