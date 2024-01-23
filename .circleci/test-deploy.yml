@@ -282,7 +282,7 @@ jobs:
       - run:
           name: Export variable with backslashes
           command: |
-            echo 'export BACKSLASHES_STRING="This is how a \ looks like"' >> "$BASH_ENV"
+            printf 'export BACKSLASHES_STRING="This is a backslash -> \\\\'"\n"'"' >> "$BASH_ENV"
           when: always
       - slack/notify:
           debug: true
