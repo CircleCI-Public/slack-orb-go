@@ -18,7 +18,7 @@
 				},
 				{
 					"type": "mrkdwn",
-					"text": "*When*: $(date +'%m/%d/%Y %T')"
+					"text": "*When*: $SLACK_ORB_TIME_NOW"
 				},
 				{
 					"type": "mrkdwn",
