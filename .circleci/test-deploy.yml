@@ -390,5 +390,5 @@ executors:
   windows:
     machine:
       image: windows-server-2022-gui:current
-      resource_class: windows.medium
+      resource_class: windows.large
       shell: bash.exe
