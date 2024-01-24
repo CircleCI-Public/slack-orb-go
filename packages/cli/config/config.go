@@ -70,7 +70,7 @@ func InitConfig() error {
 func initBuiltInEnvVars() {
 	// create new temp file to store environment variables
 	f, err := os.CreateTemp("", "slack-orb-built-in-env")
-	if err!= nil {
+	if err != nil {
 		log.Fatalf("unable to create temp file for built-in env vars: %s", err)
 		return
 	}
@@ -79,18 +79,16 @@ func initBuiltInEnvVars() {
 	currentTime := time.Now().Format("01/02/2006 15:04:05")
 	_, err = f.WriteString(fmt.Sprintf("SLACK_ORB_TIME_NOW=\"%s\"\n", currentTime))
 
-
-	if err!= nil {
+	if err != nil {
 		log.Fatalf("unable to write to temp file for built-in env vars: %s", err)
 	}
 
 	// load environment variables from temp file
-	if err := godotenv.Load(f.Name()); err!= nil {
+	if err := godotenv.Load(f.Name()); err != nil {
 		log.Fatalf("unable to load built-in env vars: %s", err)
 	}
 
 }
-
 
 func bindEnv() error {
 	// Load environment variables from BASH_ENV and SLACK_JOB_STATUS files
