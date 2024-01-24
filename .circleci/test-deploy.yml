@@ -133,7 +133,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
+                    "text": "**Current Job:** $CIRCLE_JOB"
                   }
                 },
                 {
@@ -184,7 +184,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
+                    "text": "**Current Job:** $CIRCLE_JOB"
                   }
                 },
                 {
@@ -199,7 +199,7 @@ jobs:
       - run:
           name: Dynamically populate the mention and export the template as an environment variable
           command: |
-            echo 'export COMMIT_MESSAGE="This text comes from an environment variable"' >> $BASH_ENV
+            echo 'export COMMIT_MESSAGE="This text comes from an environment variable - $CIRCLE_JOB"' >> $BASH_ENV
             echo 'export SLACK_STR_MENTIONS="$COMMIT_MESSAGE"' >> $BASH_ENV
           when: always
       - slack/notify:
@@ -223,7 +223,7 @@ jobs:
       - run:
           name: Export variable with a multiline string
           command: |
-            echo 'export MULTILINE_STRING="Line 1.\nLine 2.\nLine 3."' >> "$BASH_ENV"
+            printf 'export MULTILINE_STRING="Line 1.\nLine 2.\nLine 3."\n' >> "$BASH_ENV"
           when: always
       - slack/notify:
           debug: true
@@ -237,7 +237,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
+                    "text": "**Current Job:** $CIRCLE_JOB"
                   }
                 },
                 {
@@ -252,7 +252,8 @@ jobs:
       - run:
           name: Export variable with double quotes
           command: |
-            echo 'export DOUBLE_QUOTES_STRING="Hello There! My name is \"Potato\""' >> "$BASH_ENV"
+            printf "export DOUBLE_QUOTES_STRING='Hello There! My name is \"Potato\"'\n" >> "$BASH_ENV"
+
           when: always
       - slack/notify:
           debug: true
@@ -266,7 +267,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
+                    "text": "**Current Job:** $CIRCLE_JOB"
                   }
                 },
                 {
@@ -281,7 +282,7 @@ jobs:
       - run:
           name: Export variable with backslashes
           command: |
-            echo 'export BACKSLASHES_STRING="This is how a \ looks like"' >> "$BASH_ENV"
+            printf 'export BACKSLASHES_STRING="This is a backslash -> \\\\'"\n"'"' >> "$BASH_ENV"
           when: always
       - slack/notify:
           debug: true
@@ -295,7 +296,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
+                    "text": "**Current Job:** $CIRCLE_JOB"
                   }
                 },
                 {
