@@ -338,6 +338,11 @@ jobs:
             if [[ "$CONFIGURED_BIN_VERSION" != "$CIRCLE_TAG" ]]; then
               echo "The current release tag does not match the pinned version in the orb source."
               echo "Please delete this tag, update the pinned binary version in the orb source, and re-trigger a new release."
+              echo ""
+              echo "The pinned version can be found in the notify.yml file, under the SLACK_STR_BIN_VERSION environment variable."
+              echo ""
+              echo "Current release tag: $CIRCLE_TAG"
+              echo "Pinned version: $CONFIGURED_BIN_VERSION"
               exit 1
             fi
 
@@ -390,5 +395,5 @@ executors:
   windows:
     machine:
       image: windows-server-2022-gui:current
-      resource_class: windows.medium
+      resource_class: windows.large
       shell: bash.exe
