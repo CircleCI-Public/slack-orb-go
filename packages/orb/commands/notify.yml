@@ -128,6 +128,6 @@ steps:
         SLACK_BOOL_DEBUG: "<<parameters.debug>>"
         SLACK_STR_CIRCLECI_HOST: "<<parameters.circleci_host>>"
         SLACK_STR_SHA256: "<<parameters.sha256>>"
-        SLACK_STR_BIN_VERSION: "v1.0.0"
+        SLACK_STR_BIN_VERSION: "v0.2.7"
         SLACK_STR_BIN_OVERRIDE_URL: "<<parameters.bin_override_url>>"
       command: <<include(scripts/main.sh)>>
