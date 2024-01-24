@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/a8m/envsubst"
 	"github.com/charmbracelet/log"
@@ -65,6 +66,32 @@ func InitConfig() error {
 	return nil
 }
 
+// Add built-in environment variables to BASH_ENV
+func initBuiltInEnvVars() {
+	// create new temp file to store environment variables
+	f, err := os.CreateTemp("", "slack-orb-built-in-env")
+	if err!= nil {
+		log.Fatalf("unable to create temp file for built-in env vars: %s", err)
+		return
+	}
+	defer f.Close()
+
+	currentTime := time.Now().Format("01/02/2006 15:04:05")
+	_, err = f.WriteString(fmt.Sprintf("SLACK_ORB_TIME_NOW=\"%s\"\n", currentTime))
+
+
+	if err!= nil {
+		log.Fatalf("unable to write to temp file for built-in env vars: %s", err)
+	}
+
+	// load environment variables from temp file
+	if err := godotenv.Load(f.Name()); err!= nil {
+		log.Fatalf("unable to load built-in env vars: %s", err)
+	}
+
+}
+
+
 func bindEnv() error {
 	// Load environment variables from BASH_ENV and SLACK_JOB_STATUS files
 	// This has to be done before loading the configuration because the configuration
@@ -75,6 +102,8 @@ func bindEnv() error {
 	if err := loadEnvFromFile("/tmp/SLACK_JOB_STATUS"); err != nil {
 		return err
 	}
+
+	initBuiltInEnvVars()
 
 	var errs error
 	for k, v := range map[string]string{
