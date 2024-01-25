@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/circleci/ex/config/secret"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/CircleCI-Public/slack-orb-go/packages/cli/config"
 	"github.com/CircleCI-Public/slack-orb-go/packages/cli/slack"
@@ -26,6 +27,8 @@ var notifyCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(notifyCmd)
+	notifyCmd.Flags().String("time-format", "01/02/2006 15:04:05", "Set the built-in $SLACK_ORB_TIME_NOW variable to the provided format. Must be in the format of a Go time.Format string.")
+	viper.BindPFlag("time-format", notifyCmd.Flags().Lookup("time-format"))
 }
 
 func executeNotify(_ *cobra.Command, _ []string) {
