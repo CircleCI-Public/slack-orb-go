@@ -76,7 +76,7 @@ func initBuiltInEnvVars() {
 	}
 	defer f.Close()
 
-	currentTime := time.Now().Format("01/02/2006 15:04:05")
+	currentTime := time.Now().Format(viper.GetString("time-format"))
 	_, err = f.WriteString(fmt.Sprintf("SLACK_ORB_TIME_NOW=\"%s\"\n", currentTime))
 
 	if err != nil {
