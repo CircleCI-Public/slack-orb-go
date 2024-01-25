@@ -99,6 +99,11 @@ parameters:
     description: |
       Provide a URL to download a specific build of the Slack Orb CLI binary. This is useful if you are behind a firewall or need to test a specific build in your pipeline.
       This URL must be publicly accessible from the CircleCI build environment.
+  time_format:
+    type: string
+    default: ""
+    description: |
+      Set the built-in $SLACK_ORB_TIME_NOW variable to the provided format. Must be in the format of a Go time.Format string. See https://golang.org/pkg/time/#Time.Format for more information.
 steps:
   - run:
       when: on_fail
@@ -130,4 +135,5 @@ steps:
         SLACK_STR_SHA256: "<<parameters.sha256>>"
         SLACK_STR_BIN_VERSION: "v0.2.7"
         SLACK_STR_BIN_OVERRIDE_URL: "<<parameters.bin_override_url>>"
+        SLACK_ORB_TIME_FORMAT: "<<parameters.time_format>>"
       command: <<include(scripts/main.sh)>>
