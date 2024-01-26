@@ -28,6 +28,7 @@ var notifyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(notifyCmd)
 
+	viper.AutomaticEnv()
 	// Add time format
 	notifyCmd.Flags().String("time-format", "01/02/2006 15:04:05", "Set the built-in $SLACK_ORB_TIME_NOW variable to the provided format. Must be in the format of a Go time.Format string.")
 	viper.BindPFlag("time-format", notifyCmd.Flags().Lookup("time-format"))
