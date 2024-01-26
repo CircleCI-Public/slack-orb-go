@@ -101,7 +101,7 @@ parameters:
       This URL must be publicly accessible from the CircleCI build environment.
   time_format:
     type: string
-    default: ""
+    default: "01/02/2006 15:04:05"
     description: |
       Set the built-in $SLACK_ORB_TIME_NOW variable to the provided format. Must be in the format of a Go time.Format string. See https://golang.org/pkg/time/#Time.Format for more information.
 steps:
