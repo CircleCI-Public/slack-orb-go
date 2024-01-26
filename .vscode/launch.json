@@ -14,9 +14,11 @@
       "env": {
         "SLACK_ACCESS_TOKEN": "YOU_TOKEN",
         "SLACK_STR_CHANNEL": "YOUR_CHANNEL",
-        "SLACK_STR_TEMPLATE": "YOUR_TEMPLATE",
+        "SLACK_STR_TEMPLATE_INLINE": "{\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Today's date is $SLACK_ORB_TIME_NOW\"}}]}",
         "CCI_STATUS": "pass",
-        "SLACK_BOOL_DEBUG": "1"
+        "SLACK_BOOL_DEBUG": "1",
+        "SLACK_STR_EVENT": "pass",
+        "SLACK_ORB_TIME_FORMAT": "01/02/2006"
       }
     }
   ]
