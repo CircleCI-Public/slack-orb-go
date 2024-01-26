@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/circleci/ex/testing/compiler"
 	"github.com/circleci/ex/testing/testcontext"
@@ -24,6 +25,8 @@ func TestSlackOrbBinary(t *testing.T) {
 
 	ctx := testcontext.Background()
 	fix := setupE2E(ctx, t)
+
+	today := time.Now().Format("01/02/2006")
 
 	tests := []struct {
 		name                      string
@@ -113,6 +116,20 @@ func TestSlackOrbBinary(t *testing.T) {
 }`,
 		},
 		expectedSlackAPICallCount: 1,
+	}, {
+		name:             "Built-in Datetime env var with formatting",
+		expectedExitCode: 0,
+		expectedOutput:   fmt.Sprintf("Today's date is %s", today),
+		expectedSlackAPICallCount: 1,
+		environment: map[string]string{
+			"SLACK_ACCESS_TOKEN":    "test-token",
+			"SLACK_STR_CHANNEL":     "test-channel",
+			"CCI_STATUS":            "pass",
+			"SLACK_BOOL_DEBUG":   "true",
+			"SLACK_STR_EVENT":       "pass",
+			"SLACK_ORB_TIME_FORMAT": "01/02/2006",
+			"SLACK_STR_TEMPLATE_INLINE": "{\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Today's date is $SLACK_ORB_TIME_NOW\"}}]}",
+		},
 	}}
 
 	for _, tt := range tests {
