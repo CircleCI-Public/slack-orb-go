@@ -29,8 +29,8 @@ github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d/go.mod h1:8EPpV
 github.com/chenzhuoyu/iasm v0.9.0/go.mod h1:Xjy2NpN3h7aUqeqM+woSuuvxmIe6+DDsiNLIrkAmYog=
 github.com/chenzhuoyu/iasm v0.9.1 h1:tUHQJXo3NhBqw6s33wkGn9SP3bvrWLdlVIJ3hQBL7P0=
 github.com/chenzhuoyu/iasm v0.9.1/go.mod h1:Xjy2NpN3h7aUqeqM+woSuuvxmIe6+DDsiNLIrkAmYog=
-github.com/circleci/ex v1.0.8603-07e66de h1:bUdSXJxShh0+M4v5oLCBzKXTmEwIl7R6LWmEBoOsimU=
-github.com/circleci/ex v1.0.8603-07e66de/go.mod h1:9iuKDhXerfD2eGDb1HELTPR8buVZOfLOD6CAwMh7FLM=
+github.com/circleci/ex v1.0.8667-abac191 h1:8iUS2dLIx6UvUJAWOGAcFQLVcEwwtBmMUpfbMnJzvpg=
+github.com/circleci/ex v1.0.8667-abac191/go.mod h1:WgPdrMwcwyRkrXzO6mhwLlFuBJPpBPAmh6gstVnGxwU=
 github.com/cpuguy83/go-md2man/v2 v2.0.3/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
