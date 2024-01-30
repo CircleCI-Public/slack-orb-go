@@ -79,6 +79,11 @@ jobs:
       runner:
         type: executor
         default: cimg
+      shell:
+        type: string
+        default: bash
+        description: Bash is the default set in the orb, override this for alpine
+
     executor: << parameters.runner >>
     steps:
       - checkout
@@ -136,6 +141,7 @@ jobs:
           template: basic_success_1
           event: always
           sha256: "$SLACK_BIN_CHECKSUM"
+          shell: <<parameters.shell>>
       - slack/notify:
           debug: true
           ignore_errors: false
@@ -160,6 +166,7 @@ jobs:
                 }
               ]
             }
+          shell: <<parameters.shell>>
       - run:
           name: Verify SLACK_JOB_STATUS is written
           command: |
@@ -172,6 +179,7 @@ jobs:
           template: basic_fail_1
           mentions: "@orbs"
           event: always
+          shell: <<parameters.shell>>
       - slack/notify:
           debug: true
           ignore_errors: false
@@ -179,16 +187,19 @@ jobs:
           template: basic_success_1
           mentions: "@orbs"
           event: always
+          shell: <<parameters.shell>>
       - slack/notify:
           step_name: "Success template minimal config"
           template: basic_success_1
           event: always
+          shell: <<parameters.shell>>
       - slack/notify:
           debug: true
           ignore_errors: false
           step_name: "Success tagged template"
           template: success_tagged_deploy_1
           event: always
+          shell: <<parameters.shell>>
       - slack/notify:
           debug: true
           ignore_errors: false
@@ -213,10 +224,12 @@ jobs:
                 }
               ]
             }
+          shell: <<parameters.shell>>
       - slack/notify:
           debug: true
           ignore_errors: false
           step_name: "Notify without template parameter"
+          shell: <<parameters.shell>>
       # Should run for every branch but master
       - slack/notify:
           debug: true
@@ -225,6 +238,7 @@ jobs:
           branch_pattern: "master"
           invert_match: true
           event: always
+          shell: <<parameters.shell>>
       - slack/notify:
           debug: true
           ignore_errors: false
@@ -249,6 +263,7 @@ jobs:
                 }
               ]
             }
+          shell: <<parameters.shell>>
 
   build-release:
     executor:
@@ -303,7 +318,13 @@ workflows:
           requires: [unit-tests]
           matrix:
             parameters:
-              runner: [cimg, windows, alpine]
+              runner: [cimg, windows]
+      - integration-test-templates-alpine:
+          context: SLACK_NOTIFICATIONS_TEST
+          filters: *filters
+          requires: [unit-tests]
+          shell: ash
+          runner: alpine
       - pre-deploy-validation:
           filters: *release-filters
       - orb-tools/pack:
