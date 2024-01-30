@@ -319,7 +319,8 @@ workflows:
           matrix:
             parameters:
               runner: [cimg, windows]
-      - integration-test-templates-alpine:
+      - integration-test-templates:
+          name: integration-test-templates-alpine
           context: SLACK_NOTIFICATIONS_TEST
           filters: *filters
           requires: [unit-tests]
