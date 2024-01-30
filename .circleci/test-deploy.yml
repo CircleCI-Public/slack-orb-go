@@ -83,6 +83,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Empty commit with multiline message and special characters"
+          command: >-
+            git commit
+              --allow-empty
+              -m "This is a commit message with multiline and special characters."
+              -m "The purpose of this *commit* is to test how the orb react in `real life` scenarios. For example, sometimes commit messages will have backslashes (\), double-quotes (\") and exclamation marks (!)"
+
+      - run:
           name: Build Latest
           command: |
             detect_os() {
