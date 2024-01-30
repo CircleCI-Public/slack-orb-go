@@ -18,7 +18,7 @@ usage:
         - slack/notify:
             event: always
             channel: ABCXYZ, ZXCVBN
-            custom: |
+            template_inline: |
               {
                 "blocks": [
                   {

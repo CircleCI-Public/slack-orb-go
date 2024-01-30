@@ -14,7 +14,7 @@ usage:
       steps:
         - slack/notify:
             event: always
-            custom: |
+            template_inline: |
               {
                 "blocks": [
                   {
