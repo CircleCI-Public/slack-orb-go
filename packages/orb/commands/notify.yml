@@ -108,16 +108,19 @@ steps:
   - run:
       when: on_fail
       name: Slack - Detecting Job Status (FAIL)
+      shell: bash
       command: |
         echo 'CCI_STATUS="fail"' > /tmp/SLACK_JOB_STATUS
   - run:
       when: on_success
       name: Slack - Detecting Job Status (PASS)
+      shell: bash
       command: |
         echo 'CCI_STATUS="pass"' > /tmp/SLACK_JOB_STATUS
   - run:
       when: always
       name: << parameters.step_name >>
+      shell: bash
       environment:
         SLACK_STR_EVENT: "<<parameters.event>>"
         SLACK_STR_TEMPLATE_VAR: "<<parameters.template_var>>"
