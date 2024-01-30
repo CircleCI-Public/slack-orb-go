@@ -83,6 +83,21 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Do an empty commit with multiline message and special characters"
+          command: |
+            # if git is not installed, assume Alpine and install it
+            if ! command -v git > /dev/null 2>&1; then
+              apk update && apk add git
+            fi
+
+            git config --global user.email "exec-runtime@circleci.com"; \
+            git config --global user.name "Runtime Team"; \
+            git commit --allow-empty \
+              -m '*Line 1:* This is a commit message with _multiline_ and _special characters_. You should see it over multiple lines in the Slack message.' \
+              -m '*Line 2:* The purpose of this *commit* is to test how the orb react in `real life` scenarios. For example, sometimes commit messages will have backslashes (\), double-quotes (") and exclamation marks (!)' \
+              -m '*Line 3:* This is the last line of the commit message. If you see _three lines_ in the Slack message, then the test has passed.'; \
+            echo 'export COMMIT_MESSAGE="$(git log -1 --pretty=%B)"' >> "$BASH_ENV"
+      - run:
           name: Build Latest
           command: |
             detect_os() {
@@ -124,7 +139,7 @@ jobs:
       - slack/notify:
           debug: true
           ignore_errors: false
-          step_name: "Custom template with group mention"
+          step_name: "Inline template with group mention"
           event: always
           template_inline: |
             {
@@ -133,14 +148,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "**Current Job:** $CIRCLE_JOB"
+                    "text": "*Current Job:* $CIRCLE_JOB"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "This test will @ a normal user, a user ID, and normal group name: <@U8C9ETTUG>, @orbs, @gabriel"
+                    "text": "This test will @ a normal user, a user ID, and normal group name: <@U8C9ETTUG> and @orbs"
                   }
                 }
               ]
@@ -162,6 +177,7 @@ jobs:
           ignore_errors: false
           step_name: "Success template with mentions"
           template: basic_success_1
+          mentions: "@orbs"
           event: always
       - slack/notify:
           step_name: "Success template minimal config"
@@ -169,13 +185,14 @@ jobs:
           event: always
       - slack/notify:
           debug: true
+          ignore_errors: false
           step_name: "Success tagged template"
           template: success_tagged_deploy_1
           event: always
       - slack/notify:
           debug: true
           ignore_errors: false
-          step_name: "Custom template with env var in the message"
+          step_name: "Inline template with env var in the message"
           event: always
           template_inline: >
             {
@@ -184,7 +201,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "**Current Job:** $CIRCLE_JOB"
+                    "text": "*Current Job:* $CIRCLE_JOB"
                   }
                 },
                 {
@@ -196,18 +213,6 @@ jobs:
                 }
               ]
             }
-      - run:
-          name: Dynamically populate the mention and export the template as an environment variable
-          command: |
-            echo 'export COMMIT_MESSAGE="This text comes from an environment variable - $CIRCLE_JOB"' >> $BASH_ENV
-            echo 'export SLACK_STR_MENTIONS="$COMMIT_MESSAGE"' >> $BASH_ENV
-          when: always
-      - slack/notify:
-          debug: true
-          ignore_errors: false
-          step_name: "Dynamic template with environment variable"
-          event: always
-          template_path: packages/cli/templates/basic_success_1.json
       - slack/notify:
           debug: true
           ignore_errors: false
@@ -220,15 +225,10 @@ jobs:
           branch_pattern: "master"
           invert_match: true
           event: always
-      - run:
-          name: Export variable with a multiline string
-          command: |
-            printf 'export MULTILINE_STRING="Line 1.\nLine 2.\nLine 3."\n' >> "$BASH_ENV"
-          when: always
       - slack/notify:
           debug: true
           ignore_errors: false
-          step_name: "Notify with multiline string"
+          step_name: "Notify with special characters and multiline string in commit message"
           event: always
           template_inline: >
             {
@@ -237,73 +237,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "**Current Job:** $CIRCLE_JOB"
+                    "text": "*Current Job:* $CIRCLE_JOB"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "This message should show over multiple lines:\n $MULTILINE_STRING"
-                  }
-                }
-              ]
-            }
-      - run:
-          name: Export variable with double quotes
-          command: |
-            printf "export DOUBLE_QUOTES_STRING='Hello There! My name is \"Potato\"'\n" >> "$BASH_ENV"
-
-          when: always
-      - slack/notify:
-          debug: true
-          ignore_errors: false
-          step_name: "Notify with double-quoted string"
-          event: always
-          template_inline: >
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "**Current Job:** $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "This message should show a string between double quotes: $DOUBLE_QUOTES_STRING"
-                  }
-                }
-              ]
-            }
-      - run:
-          name: Export variable with backslashes
-          command: |
-            printf 'export BACKSLASHES_STRING="This is a backslash -> \\\\'"\n"'"' >> "$BASH_ENV"
-          when: always
-      - slack/notify:
-          debug: true
-          ignore_errors: false
-          step_name: "Notify with backslashes string"
-          event: always
-          template_inline: >
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "**Current Job:** $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "This message should show a backslash: $BACKSLASHES_STRING"
+                    "text": "$COMMIT_MESSAGE"
                   }
                 }
               ]
