@@ -9,10 +9,15 @@ The Slack Orb for CircleCI is now written in Go! This means the orb is now more 
 1. The orb now downloads the Slack Orb CLI binary to `.circleci/orbs/circleci/slack/$PLATFORM/$ARCH` in the working directory.
    1. This can be checksum verified
    2. This is cacheable if desired.
-2. You can no longer use evaluated sub-shell commands (e.g. `$(date +%s)`).
+2. The `custom` parameter used for custom inline templates has been renamed to `template_inline`.
+3. The `template` parameter is now reserved only for built-in templates and will no longer support dynamic templates
+4. Dynamic templates must now be defined with the `template_var` parameter.
+5. You can no longer use evaluated sub-shell commands (e.g. `$(date +%s)`).
    1. Instead, you can pre-populate environment variables in the `$BASH_ENV` file. [See more in our wiki]()
+      1. **Known issue:** variables do not expand in Alpine
    2. The Slack Orb has a small number of "built in" environment variables for use in templates [See more in our wiki]()
-3. On-hold job removed. Low usage prompted removal from this release for simplicity of the documentation. We will revisit this as feedback comes in.
+6. On-hold job removed. Low usage prompted removal from this release for simplicity of the documentation. We will revisit this as feedback comes in.
+7. Alpine users who do not have BASH in their image, must now set the `shell` parameter to `ash` explicitly.
 
 ## Usage
 
