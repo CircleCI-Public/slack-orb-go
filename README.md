@@ -1,16 +1,32 @@
-# Slack Orb in Go [![CircleCI Build Status](https://circleci.com/gh/CircleCI-Public/slack-orb.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/CircleCI-Public/slack-orb) [![CircleCI Orb Version](https://badges.circleci.com/orbs/circleci/slack.svg)](https://circleci.com/orbs/registry/orb/circleci/slack) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/circleci-public/slack-orb/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
+# Slack Orb for CircleCI [![CircleCI Build Status](https://circleci.com/gh/CircleCI-Public/slack-orb.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/CircleCI-Public/slack-orb) [![CircleCI Orb Version](https://badges.circleci.com/orbs/circleci/slack.svg)](https://circleci.com/orbs/registry/orb/circleci/slack) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/circleci-public/slack-orb/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
 
-This repository houses a conceptual prototype demonstrating the potential appearance and functionality of the CircleCI [Slack orb](https://github.com/CircleCI-Public/slack-orb), reimplemented in Go. Please note that this version is exploratory and not intended to supplant the original orb, nor is it advisable to utilize this in production environments. Explore, understand, and experiment, but proceed with caution when integrating it into practical applications. 🛠✨
+The Slack Orb for CircleCI connects your CI/CD pipelines to Slack for ChatOps. Fully customizable, platform agnostic, and easy to integrate into your new or existing CI/CD pipelines.
+
+## Slack Orb v5+ Breaking Changes
+
+The Slack Orb for CircleCI is now written in Go! This means the orb is now more easily maintained, and better supports a wide range of platforms, no longer requiring BASH, CURL, JQ, or any other shell tools or commands.
+
+1. The orb now downloads the Slack Orb CLI binary to `.circleci/orbs/circleci/slack/$PLATFORM/$ARCH` in the working directory.
+   1. This can be checksum verified
+   2. This is cacheable if desired.
+2. You can no longer use evaluated sub-shell commands (e.g. `$(date +%s)`).
+   1. Instead, you can pre-populate environment variables in the `$BASH_ENV` file. [See more in our wiki]()
+   2. The Slack Orb has a small number of "built in" environment variables for use in templates [See more in our wiki]()
+3. On-hold job removed. Low usage prompted removal from this release for simplicity of the documentation. We will revisit this as feedback comes in.
 
 ## Usage
 
 ### Setup
 
-In order to use the Slack Orb on CircleCI you will need to create a Slack App and provide an OAuth token. Find the guide in the wiki: [How to setup Slack orb](https://github.com/CircleCI-Public/slack-orb/wiki/Setup)
+In order to use the Slack Orb on CircleCI you will need to create a Slack App and provide an OAuth token. 
+
+**Full guide in the wiki:** [How to setup Slack orb](https://github.com/CircleCI-Public/slack-orb/wiki/Setup)
 
 ### Use In Config
 
-For full usage guidelines, see the [Orb Registry listing](http://circleci.com/orbs/registry/orb/circleci/slack).
+For config examples, see the [Orb Registry listing](http://circleci.com/orbs/registry/orb/circleci/slack).
+
+For more detailed information on customization, please see the [Slack Orb Wiki](https://github.com/CircleCI-Public/slack-orb/wiki).
 
 ## Templates
 
@@ -41,7 +57,7 @@ The Slack Orb comes with a number of included templates to get your started with
               "fields": [
                 {
                   "type": "plain_text",
-                  "text": "*This is a text notification*",
+                  "text": "*Notification from $CIRCLE_JOB*",
                   "emoji": true
                 }
               ]
@@ -50,17 +66,6 @@ The Slack Orb comes with a number of included templates to get your started with
         }
   ```
 
-## Branch or Tag Filtering
-
-Limit Slack notifications to particular branches with the "branch_pattern" or "tag_pattern" parameter.
-
-```
-A comma separated list of regex matchable branch or tag names. Notifications will only be sent if sent from a job from these branches/tags. By default ".+" will be used to match all branches/tags. Pattern must match the full string, no partial matches. Keep in mind that "branch_pattern" and "tag_pattern" are mutually exclusive.
-```
-
-See [usage examples](https://circleci.com/developer/orbs/orb/circleci/slack#usage-examples).
-
----
 
 ## FAQ
 
