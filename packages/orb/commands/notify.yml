@@ -104,15 +104,22 @@ parameters:
     default: "01/02/2006 15:04:05"
     description: |
       Set the built-in $SLACK_ORB_TIME_NOW variable to the provided format. Must be in the format of a Go time.Format string. See https://golang.org/pkg/time/#Time.Format for more information.
+  shell:
+    type: string
+    default: bash
+    description: |
+      For Alpine users, this should be set to "ash". All other users should keep the default of "bash", including Windows.
 steps:
   - run:
       when: on_fail
       name: Slack - Detecting Job Status (FAIL)
+      shell: << parameters.shell >>
       command: |
         echo 'CCI_STATUS="fail"' > /tmp/SLACK_JOB_STATUS
   - run:
       when: on_success
       name: Slack - Detecting Job Status (PASS)
+      shell: << parameters.shell >>
       command: |
         echo 'CCI_STATUS="pass"' > /tmp/SLACK_JOB_STATUS
   - run:
@@ -136,4 +143,5 @@ steps:
         SLACK_STR_BIN_VERSION: "v0.2.7"
         SLACK_STR_BIN_OVERRIDE_URL: "<<parameters.bin_override_url>>"
         SLACK_ORB_TIME_FORMAT: "<<parameters.time_format>>"
+      shell: << parameters.shell >>
       command: <<include(scripts/main.sh)>>
