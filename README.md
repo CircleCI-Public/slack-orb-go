@@ -7,15 +7,15 @@ The Slack Orb for CircleCI connects your CI/CD pipelines to Slack for ChatOps. F
 The Slack Orb for CircleCI is now written in Go! This means the orb is now more easily maintained, and better supports a wide range of platforms, no longer requiring BASH, CURL, JQ, or any other shell tools or commands.
 
 1. The orb now downloads the Slack Orb CLI binary to `.circleci/orbs/circleci/slack/$PLATFORM/$ARCH` in the working directory.
-   1. This can be checksum verified
+   1. This can be checksum verified.
    2. This is cacheable if desired.
 2. The `custom` parameter used for custom inline templates has been renamed to `template_inline`.
-3. The `template` parameter is now reserved only for built-in templates and will no longer support dynamic templates
+3. The `template` parameter is now reserved only for built-in templates and will no longer support dynamic templates.
 4. Dynamic templates must now be defined with the `template_var` parameter.
 5. You can no longer use evaluated sub-shell commands (e.g. `$(date +%s)`).
    1. Instead, you can pre-populate environment variables in the `$BASH_ENV` file. [See more in our wiki]()
-      1. **Known issue:** variables do not expand in Alpine
-   2. The Slack Orb has a small number of "built in" environment variables for use in templates [See more in our wiki]()
+      1. **Known issue:** sub-shells do not expand in `BASH_ENV` in Alpine.
+   2. The Slack Orb has a small number of "built in" environment variables for use in templates [See more in our wiki]().
 6. On-hold job removed. Low usage prompted removal from this release for simplicity of the documentation. We will revisit this as feedback comes in.
 7. Alpine users who do not have BASH in their image, must now set the `shell` parameter to `ash` explicitly.
 
@@ -25,7 +25,7 @@ The Slack Orb for CircleCI is now written in Go! This means the orb is now more 
 
 In order to use the Slack Orb on CircleCI you will need to create a Slack App and provide an OAuth token. 
 
-**Full guide in the wiki:** [How to setup Slack orb](https://github.com/CircleCI-Public/slack-orb/wiki/Setup)
+**Full guide in the wiki:** [How to setup Slack orb](https://github.com/CircleCI-Public/slack-orb/wiki/Setup).
 
 ### Use In Config
 
@@ -74,7 +74,7 @@ The Slack Orb comes with a number of included templates to get your started with
 
 ## FAQ
 
-View the [FAQ in the wiki](https://github.com/CircleCI-Public/slack-orb/wiki/FAQ)
+View the [FAQ in the wiki](https://github.com/CircleCI-Public/slack-orb/wiki/FAQ).
 
 ## Contributing
 
@@ -90,8 +90,8 @@ This repository is configured as a monorepo, containing the `orb` source code, w
 
 1. Clone this repository
 2. Install [taskfile.dev](https://taskfile.dev/installation/) if you do not have it.
-   1. HOMEBREW: `brew install go-task/tap/go-task`
-   2. NPM: `npm install -g @go-task/cli`
-   3. CHOCOLATEY: `choco install go-task`
+   1. HOMEBREW: `brew install go-task/tap/go-task`.
+   2. NPM: `npm install -g @go-task/cli`.
+   3. CHOCOLATEY: `choco install go-task`.
 3. Run `task sync` to download dependencies.
-4. Before pushing your branch, ensure to run `task tidy`
+4. Before pushing your branch, ensure to run `task tidy`.
