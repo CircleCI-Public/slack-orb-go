@@ -7,7 +7,7 @@ require github.com/joho/godotenv v1.5.1
 require (
 	github.com/a8m/envsubst v1.4.2
 	github.com/charmbracelet/log v0.3.1
-	github.com/circleci/ex v1.0.8603-07e66de
+	github.com/circleci/ex v1.0.8797-9a3eb84
 	github.com/fatih/color v1.16.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/hashicorp/go-multierror v1.1.1
@@ -36,7 +36,7 @@ require (
 	github.com/honeycombio/beeline-go v1.14.0 // indirect
 	github.com/honeycombio/dynsampler-go v0.6.0 // indirect
 	github.com/honeycombio/libhoney-go v1.20.0 // indirect
-	github.com/klauspost/compress v1.17.4 // indirect
+	github.com/klauspost/compress v1.17.5 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
