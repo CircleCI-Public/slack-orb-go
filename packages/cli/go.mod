@@ -6,7 +6,7 @@ require github.com/joho/godotenv v1.5.1
 
 require (
 	github.com/a8m/envsubst v1.4.2
-	github.com/charmbracelet/log v0.3.1
+	github.com/charmbracelet/log v0.4.0
 	github.com/circleci/ex v1.0.8603-07e66de
 	github.com/fatih/color v1.16.0
 	github.com/gin-gonic/gin v1.9.1
@@ -14,7 +14,7 @@ require (
 	github.com/muesli/termenv v0.15.2
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	gotest.tools/v3 v3.5.1
 )
 
@@ -47,7 +47,7 @@ require (
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
-	github.com/charmbracelet/lipgloss v0.9.1 // indirect
+	github.com/charmbracelet/lipgloss v0.10.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -76,7 +76,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
